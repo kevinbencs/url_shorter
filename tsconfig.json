@@ -6,5 +6,8 @@
     "moduleResolution": "node",
     "types": ["node"],
     "esModuleInterop": true,
+    "rootDir": "./src",
+    "outDir": "./build",
   },
+   "include": ["src"]
 }
