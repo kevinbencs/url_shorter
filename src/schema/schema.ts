@@ -11,8 +11,7 @@ export const RegisterSchema = z.object({
 
             return lowercase && uppercase && number && passwordLength;
         }, {message: 'Password must be at least 8 characters, and contain 1 uppercase, 1 lowercase and 1 number.'}),
-    name: z.string().min(1, { message: 'Name is required' }),
-    privacy: z.boolean().refine((val) => {return val}, {message: 'Please accept the privacy policy.'})
+    name: z.string().min(1, { message: 'Name is required' })
 })
 
 
@@ -27,4 +26,13 @@ export const SingInSchema = z.object({
 
             return lowercase && uppercase && number && passwordLength;
         }, {message: 'Password must be at least 8 characters, and contain 1 uppercase, 1 lowercase and 1 number.'}),
+})
+
+export const SearchSchema = z.object({
+    url: z.string().url({message: 'Url is required'})
+})
+
+export const LinkSchema = z.object({
+    url: z.string().url({message: 'Url is required'}),
+    eligibility: z.array(z.string())
 })

@@ -1,7 +1,7 @@
 import {Router} from "express";
-import { GetDashboardPage, GetHomePage, GetSearchPage, GetSigUpPage, GetSignInPage, Register } from "../controllers/controllers";
-import { validateData } from "../middleware/validate";
-import { RegisterSchema } from "../schema/schema";
+import { AddLinks, DeleteLink, GetDashboardPage, GetHomePage, GetLinkInformation, GetLinks, GetSearchPage, GetSigUpPage, GetSignInPage, LogIn, LogOut, Register, UpdateLink, UrlRedirect } from "../controllers/controllers.ts";
+import { validateData } from "../middleware/validate.ts";
+import { LinkSchema, RegisterSchema, SearchSchema, SingInSchema } from "../schema/schema.ts";
 
 const router = Router();
 
@@ -24,27 +24,27 @@ router.get('/search',GetSearchPage)
 router.post('/api/signup', validateData(RegisterSchema), Register)
 
 //Login route
-//router.post('/api/signin')
+router.post('/api/signin', validateData(SingInSchema),LogIn)
 
 //Logout route
-//router.get('/api/logout')
+router.get('/api/logout',LogOut)
 
 //Get links
-//router.get('/api/links')
+router.get('/api/links',GetLinks)
 
 //Add link
-//router.post('/api/links')
-
-//Get link information
-//router.get('/api/search/:link')
+router.post('/api/links',validateData(LinkSchema) ,AddLinks)
 
 //Delete link
-//router.delete('/api/link/:id')
+router.delete('/api/link/:id',DeleteLink)
 
 //Update link
-//router.patch('/api/link/:id')
+router.patch('/api/link/:id',validateData(LinkSchema) ,UpdateLink)
+
+//Post search
+router.post('/api/search/:url', validateData(SearchSchema),GetLinkInformation)
 
 //Redirect url
-//router.get('/:url')
+router.get('/:url',UrlRedirect)
 
 export default router;

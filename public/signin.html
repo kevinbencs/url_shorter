@@ -3,10 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Url shorter</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <title>Sign in</title>
 </head>
-<body>
-    <header></header>
-    <main></main>
+<body >
+    <header>
+        <nav class="pt-10 mr-5 ml-5 xl:ml-[20%]">
+            <a href="/">
+                <h2 class="text-3xl italic font-[cursive] font-bold text-fuchsia-400">USr</h2>
+            </a>
+        </nav>
+    </header>
+    <main>
+        <div class="flex justify-center mt-20 ">
+            <form action="" class="w-full max-w-[700px] ml-2 mr-2 xl:ml-0 xl:mr-0 xl:w-[50%] rounded-3xl  min-h-100 p-10 flex flex-col items-start justify-start gap-9">
+                <h1 class="text-3xl">Sign in</h1>
+                <div>Don't have an account? <a href="/signup" class="text-fuchsia-400 hover:text-fuchsia-600">Sign up</a></div>
+                <label class="w-full">
+                    <div class="text-sm mb-3">Email</div>
+                    <input type="text" name="Email" class="border-gray-700 border  rounded-md p-2 w-full text-sm" required>
+                </label>
+                <label class="w-full">
+                    <div class="text-sm mb-3">Password</div>
+                    <input type="text" name="Password" class="border-gray-700 border  rounded-md p-2 w-full text-sm" required>
+                </label>
+                <input type="submit" value="Sing in" class="text-sm border-fuchsia-400 border p-2 w-full rounded-lg  hover:bg-fuchsia-400 hover:text-white cursor-pointer">
+            </form>
+        </div>
+    </main>
 </body>
 </html>
