@@ -2,8 +2,12 @@ import {Router} from "express";
 import { AddLinks, DeleteLink, GetDashboardPage, GetHomePage, GetLinkInformation, GetLinks, GetSearchPage, GetSigUpPage, GetSignInPage, LogIn, LogOut, Register, UpdateLink, UrlRedirect } from "../controllers/controllers.ts";
 import { validateData } from "../middleware/validate.ts";
 import { LinkSchema, RegisterSchema, SearchSchema, SingInSchema } from "../schema/schema.ts";
+import { authenticateToken } from "../middleware/authDashboard.ts";
+
 
 const router = Router();
+
+router.use(authenticateToken)
 
 //Get Home page
 router.get('/', GetHomePage)

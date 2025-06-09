@@ -1,16 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <title>Url shorter</title>
+    <title>Dashboard</title>
 </head>
+
 <body>
-    <header></header>
-    <main></main>
-    <footer></footer>
+    <header class="sticky top-0 z-10 bg-gray-50">
+        <div class="flex justify-between p-5">
+            <div class="lg:hidden">
+                <button id="show_menu_label"
+                    class="w-12 h-12  cursor-pointer rounded-md  flex flex-col justify-center items-center"
+                    tabindex="0">
+                    <div class="w-8  h-1 bg-black"></div>
+                    <div class="w-8 m-1 h-1 bg-black"></div>
+                    <div class="w-8  h-1 bg-black"></div>
+                </button>
+
+            </div>
+            <div class="hidden lg:block text-3xl italic font-[cursive] font-bold text-fuchsia-400">USr</div>
+            <div id="user_name">Name</div>
+        </div>
+
+    </header>
+    <main class=" p-5 bg-gray-50" id="main">
+        <div class="w-60 fixed top-0 z-20 -left-96 p-5 bg-gray-100 min-h-screen  duration-500 ease-in-out shadow-md hidden"
+            id="sideBar">
+            <div class="flex justify-end">
+                <button id="hide_menu_label"
+                    class="w-12 h-12 cursor-pointer rounded-md  flex flex-col justify-center items-center">
+                    <div class="w-10  h-1 rotate-135 relative   bg-black"></div>
+                    <div class="w-10  h-1  rotate-45 relative -top-1 bg-black"></div>
+                </button>
+            </div>
+
+            <section>
+                <li><a href="/search" class="cursor-pointer">Search</a></li>
+                <li><button class="cursor-pointer">My urls</button></li>
+                <li><button class="cursor-pointer">Other urls</button> </li>
+                <li><button class="cursor-pointer" id="log_out">Log out</button></li>
+            </section>
+
+
+        </div>
+        <div>
+            <h1 class="text-4xl mb-10">Dashboard</h1>
+
+            <form action="">
+                <input type="text">
+                <input type="submit" value="Add">
+            </form>
+
+            <section id="my_urls_section">
+                <h2 class="text-2xl mb-5">My urls</h2>
+                <ul id="my_urls">
+                    <li>
+                        <div class="flex">
+                            <span class="" tabindex="0">&#9940;</span>
+                        <div></div>
+                        <span tabindex="0"> &#128314; &#128315;</span>
+                        </div>
+                        <div></div>
+                        
+                    </li>
+                </ul>
+            </section>
+
+            <section id="other_urls_section">
+                <h2 class="text-2xl">Other urls</h2>
+                <ul id="other_urls"></ul>
+            </section>
+
+
+        </div>
+        <div></div>
+    </main>
 
     <script src="dashboard.js"></script>
 </body>
+
 </html>
