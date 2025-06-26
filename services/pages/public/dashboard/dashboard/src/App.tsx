@@ -1,5 +1,6 @@
 import Header from './components/Header'
 import Main from './components/Main'
+import Sidebar from './components/Sidebar'
 import { SidebarProvider } from './components/SidebarContext'
 import { UrlProvider } from './components/UrlContext'
 
@@ -10,6 +11,7 @@ function App() {
       <UrlProvider>
         <>
           <Header />
+          <Sidebar />
           <Main />
         </>
       </UrlProvider>

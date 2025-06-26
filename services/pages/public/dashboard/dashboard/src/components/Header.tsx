@@ -24,8 +24,8 @@ const Header = () => {
 
     return (
         <>
-            <header className={`sticky top-0 z-10  bg-gray-50 dark:bg-[#161616] dark:text-[#e2e2e2] ${shadow}`}>
-                <div className="flex justify-between p-5">
+            <header className={`sticky top-0 z-10  bg-gray-50 dark:bg-[#161616] dark:text-[#e2e2e2] ${shadow} lg:dark:bg-[#242424]`}>
+                <div className="flex justify-between p-5 lg:justify-end">
                     <div className="lg:hidden">
                         <button onClick={() => setShowSidebar('left-0')}
                             className="w-12 h-12  cursor-pointer rounded-md  flex flex-col justify-center items-center"
@@ -36,7 +36,7 @@ const Header = () => {
                         </button>
 
                     </div>
-                    <div className="hidden lg:block text-3xl italic font-[cursive] font-bold text-fuchsia-400">USr</div>
+                    
                     <div className="flex gap-4 items-center">
                         <ThemeToggle />
                         <div >Name</div>

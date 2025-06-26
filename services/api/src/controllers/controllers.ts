@@ -6,57 +6,6 @@ import process from "process";
 const { Request, Response } = pkg
 
 
-//GET request - Get Home page
-export async function GetHomePage (req: Request, res: Response): Promise<void> {
-    try {
-        return void res.status(200).sendFile(path.join(process.cwd(),'./public/home.html'))
-    } catch (error) {
-        console.log(error)
-        return void res.status(500).json({error: 'Internal server error.'})
-    }
-}
-
-//GET request - Get Sign in page
-export async function GetSignInPage (req: Request, res: Response): Promise<void> {
-    try {
-        return void res.status(200).sendFile(path.join(process.cwd(),'./public/signin.html'))
-    } catch (error) {
-        console.log(error)
-        return void res.status(500).json({error: 'Internal server error.'})
-    }
-}
-
-//GET request - Get Sing up page
-export async function GetSigUpPage (req: Request, res: Response): Promise<void> {
-    try {
-        return void res.status(200).sendFile(path.join(process.cwd(),'./public/signup.html'))
-    } catch (error) {
-        console.log(error)
-        return void res.status(500).json({error: 'Internal server error.'})
-    }
-}
-
-//GET request - Get Dashboard page
-export async function GetDashboardPage (req: Request, res: Response): Promise<void> {
-    try {
-        return void res.status(200).sendFile(path.join(process.cwd(),'./public/dashboard.html'))
-    } catch (error) {
-        console.log(error)
-        return void res.status(500).json({error: 'Internal server error.'})
-    }
-}
-
-//GET request - Get Search page
-export async function GetSearchPage (req: Request, res: Response): Promise<void> {
-    try {
-        return void res.status(200).sendFile(path.join(process.cwd(),'./public/search.html'))
-    } catch (error) {
-        console.log(error)
-        return void res.status(500).json({error: 'Internal server error.'})
-    }
-}
-
-
 //POST request - Sing up
 export async function Register(req: Request, res: Response): Promise<void>  {
     try {
@@ -143,17 +92,42 @@ export async function UpdateLink(req: Request, res: Response): Promise<void> {
 }
 
 
-//GET request - Redirect
-export async function UrlRedirect(req: Request, res: Response): Promise<void> {
+
+//POST request - Add private links
+export async function AddPrivateLinks(req: Request, res: Response): Promise<void> {
     try {
+        return void res.status(200).json({message: 'Logged out'})
+    } catch (error) {
+        console.log(error)
+        return void res.status(500).json({error: 'Internal server error.'})
+    }
+}
 
-        const target = req.params.url;
-        if (target.includes('.') || req.originalUrl.includes('.')) {
-            return void res.status(404).send('Not found');
-        }
+//GEt request - Get private links
+export async function GetPrivateLinks(req: Request, res: Response): Promise<void> {
+    try {
+        return void res.status(200).json({message: 'Logged out'})
+    } catch (error) {
+        console.log(error)
+        return void res.status(500).json({error: 'Internal server error.'})
+    }
+}
+
+//DELETE request - Delete account
+export async function DeleteAccount(req: Request, res: Response): Promise<void> {
+    try {
+        return void res.status(200).json({message: 'Logged out'})
+    } catch (error) {
+        console.log(error)
+        return void res.status(500).json({error: 'Internal server error.'})
+    }
+}
 
 
-        return void res.status(302).redirect('/')
+//PATCH request - Update password
+export async function UpdatePassword(req: Request, res: Response): Promise<void> {
+    try {
+        return void res.status(200).json({message: 'Logged out'})
     } catch (error) {
         console.log(error)
         return void res.status(500).json({error: 'Internal server error.'})
