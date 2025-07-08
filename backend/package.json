@@ -1,0 +1,43 @@
+{
+  "name": "url_shorter",
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "author": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node api/dist/index.js && node pages/dist/index.js && node redirect/dist/index.js" ,
+    "build:api": "esbuild api/src/index.ts --bundle --platform=node --outfile=dist/index.js --format=esm  --external:node:* --external:path --packages=external",
+    "build:redirect": "esbuild redirect/src/index.ts --bundle --platform=node --outfile=dist/index.js --format=esm  --external:node:* --external:path --packages=external",
+    "build:pages": "esbuild pages/src/index.ts --bundle --platform=node --outfile=dist/index.js --format=esm  --external:node:* --external:path --packages=external",
+    "dev:node_api": "node --watch api/dist/index.js",
+    "dev:node_pages": "node --watch pages/dist/index.js",
+    "dev:node_redirect": "node --watch redirect/dist/index.js",
+    "dev:tsc_api": "nodemon --watch src --ext ts --exec ts-node api/src/index.ts",
+    "dev:tsc_pages": "nodemon --watch src --ext ts --exec ts-node pages/src/index.ts",
+    "dev:tsc_redirect": "nodemon --watch src --ext ts --exec ts-node redirect/src/index.ts",
+    "check": "tsc --noEmit"
+  },
+  "type": "module",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "tailwindcss": "^4.1.7",
+    "zod": "^3.24.4"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.18",
+    "@types/express": "^5.0.1",
+    "@types/jsonwebtoken": "^9.0.9",
+    "@types/node": "^22.15.17",
+    "esbuild": "^0.25.4",
+    "jest": "^29.7.0",
+    "nodemon": "^3.1.10",
+    "prisma": "^6.11.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  }
+}

@@ -32,7 +32,8 @@ const NewPass = () => {
         });
 
         if(!res.ok){
-          
+          const Err = await res.json() as {error: string}
+          setErr(Err.error)
         }
 
       } catch (error) {

@@ -1,8 +1,9 @@
 import { useState, type SyntheticEvent, useTransition } from 'react'
 import UrlOtherUrls from './UrlOtherUrls';
-import useSWR from 'swr'
+import useSWR from 'swr';
 
-const fetcher = async (url: string): Promise<{ res: { code: string, url: string, id: string }[] }> => {
+
+const fetcher = async (url: string): Promise<{ res: { code: string, url: string, id: string }[]  }> => {
     try {
         const res = await fetch(url);
 
@@ -41,7 +42,7 @@ const OtherUrls = () => {
                         "Access-Control-Allow-Origin": "*",
 
                     },
-                    body: JSON.stringify({ code })
+                    body: JSON.stringify({ code, })
                 })
 
                 if (!res.ok) {
@@ -58,7 +59,7 @@ const OtherUrls = () => {
 
                 }
 
-
+                mutate();
             } catch (error) {
                 console.error(error)
                 setErr('Something went wrong, please try again.')
@@ -86,7 +87,12 @@ const OtherUrls = () => {
                 <section className='max-w-[800px] w-full'>
                     <h2 className="text-2xl mb-5">Other urls</h2>
                     <ul>
-                        {(data && data.res) && data.res.map((item) => <UrlOtherUrls />)}
+                        {isLoading && <div>
+                            <svg className="mr-3 size-5 animate-spin " viewBox="0 0 24 24"> </svg>
+                            Loading...
+                            </div> }
+                        {error && <div className='text-red-700'>{error}</div> }
+                        {(data && data.res) && data.res.map((item) => <UrlOtherUrls key={item.id} code={item.code} id={item.id}/>)}
                     </ul>
                 </section>
             </div>

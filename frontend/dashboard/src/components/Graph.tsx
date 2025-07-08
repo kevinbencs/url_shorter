@@ -8,7 +8,7 @@ import {
   Title,
   Tooltip,
   Legend,
-  BarElement, 
+  BarElement,
   ArcElement
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
@@ -21,7 +21,7 @@ ChartJS.register(
   Title,
   Tooltip,
   Legend,
-  BarElement, 
+  BarElement,
   ArcElement
 );
 
@@ -40,24 +40,25 @@ export const options = {
 
 const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
 
-export const data = {
-  labels,
-  datasets: [
-    {
-      label: 'Dataset 1',
-      data: [1,2,3,4,5,6,7,],
-      borderColor: 'rgb(255, 99, 132)',
-      backgroundColor: 'rgba(255, 99, 132, 0.5)',
-      tension: 0.1
-    },
-    
-  ],
-};
+export
 
-const Graph = () => {
-  return (
-    <Line options={options} data={data} />
-  )
-}
+  const Graph = (props: { data: number[] }) => {
+    const data = {
+      labels,
+      datasets: [
+        {
+          label: 'Dataset 1',
+          data: props.data,
+          borderColor: 'rgb(255, 99, 132)',
+          backgroundColor: 'rgba(255, 99, 132, 0.5)',
+          tension: 0.1
+        },
+
+      ],
+    };
+    return (
+      <Line options={options} data={data} />
+    )
+  }
 
 export default Graph

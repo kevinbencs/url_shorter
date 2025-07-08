@@ -1,7 +1,7 @@
 import { useState } from "react"
 
 
-const UrlOtherUrls = () => {
+const UrlOtherUrls = (props: {code: string, id: string}) => {
     const [show, setShow] = useState<boolean>(false)
     return (
         <li>
@@ -12,7 +12,7 @@ const UrlOtherUrls = () => {
             </div>
             {show &&
                 <div className="mt-2 flex justify-between">
-                    <div>code</div>
+                    <div>code: {props.code}</div>
                     <div>delete</div>
                 </div>
                 

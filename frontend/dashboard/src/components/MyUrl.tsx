@@ -2,7 +2,7 @@ import { useState, type SyntheticEvent, useTransition } from 'react'
 import UrlOfMyUrls from './UrlOfMyUrls';
 import useSWR from 'swr'
 
-const fetcher = async (url: string): Promise<{ res: { code: string, url: string, id: string }[] }> => {
+const fetcher = async (url: string): Promise<{ res: { code: string, url: string, id: string, data: number[], number: number, priv: boolean, once: boolean, min: number }[] }> => {
     try {
         const res = await fetch(url);
 
@@ -60,6 +60,8 @@ const MyUrl = () => {
                     }
 
                 }
+
+                mutate()
             } catch (error) {
                 console.error(error)
                 setErr('Something went wrong, please try again.')
@@ -83,19 +85,19 @@ const MyUrl = () => {
                     }
                     <label className="mb-4 ">
                         <div className="text-xl mb-2">Add new url</div>
-                        <input type="url" name="url_text" className="w-full border border-gray-700 rounded-3xl p-1 pl-4 pr-4 mt-2" placeholder='https://example.com' disabled={isPending} value={url} onChange={(e) => setUrl(e.target.value)}/>
+                        <input type="url" name="url_text" className="w-full border border-gray-700 rounded-3xl p-1 pl-4 pr-4 mt-2" placeholder='https://example.com' disabled={isPending} value={url} onChange={(e) => setUrl(e.target.value)} />
                     </label>
                     <label className='flex gap-5 mb-4'>
-                        <input type="checkbox" name='Once_use' disabled={isPending} checked={once} onChange={(e) => setOnce(e.target.checked)}/>
+                        <input type="checkbox" name='Once_use' disabled={isPending} checked={once} onChange={(e) => setOnce(e.target.checked)} />
                         Once use
                     </label>
 
                     <label className='flex gap-5 mb-4'>
-                        <input type="checkbox" name='Private' disabled={isPending} checked={priv} onChange={(e) => setPrivate(e.target.checked)}/>
+                        <input type="checkbox" name='Private' disabled={isPending} checked={priv} onChange={(e) => setPrivate(e.target.checked)} />
                         Private
                     </label>
 
-                    <input inputMode="numeric" type='text' pattern="[0-9]*" name="Minute" placeholder="Minute" min={0} max={7200} className='mb-4 w-full border border-gray-700 rounded-3xl p-1 pl-4 pr-4 mt-2' disabled={isPending} value={min} onChange={(e) => setMin(Number(e.target.value))}/>
+                    <input inputMode="numeric" type='text' pattern="[0-9]*" name="Minute" placeholder="Minute" min={0} max={7200} className='mb-4 w-full border border-gray-700 rounded-3xl p-1 pl-4 pr-4 mt-2' disabled={isPending} value={min} onChange={(e) => setMin(Number(e.target.value))} />
 
                     <input type="submit" value="Add" className="cursor-pointer text-md w-full border-fuchsia-400 border pt-1 pb-1 rounded-full  hover:bg-fuchsia-400 hover:text-white " disabled={isPending} />
                 </form>
@@ -104,8 +106,13 @@ const MyUrl = () => {
                 <section className='max-w-[800px] w-full'>
                     <h2 className="text-2xl mb-5">My urls</h2>
                     <ul >
-                        {(data && data.res) && data.res.map((item) => <UrlOfMyUrls />)}
-                        
+                        {isLoading && <div>
+                            <svg className="mr-3 size-5 animate-spin " viewBox="0 0 24 24"> </svg>
+                            Loading...
+                            </div> }
+                        {error && <div className='text-red-700'>{error}</div> }
+                        {(data && data.res) && data.res.map((item) => <UrlOfMyUrls data={item.data} code={item.code} id={item.id} url={item.url} key={item.id} number={item.number} priv={item.priv} />)}
+
                     </ul>
                 </section>
             </div>
