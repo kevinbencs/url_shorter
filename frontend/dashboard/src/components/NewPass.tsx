@@ -6,6 +6,7 @@ const NewPass = () => {
   const [pass2, setPass2] = useState<string>('');
   const [err, setErr] = useState<string>('');
   const [isPending, startTransition] = useTransition();
+  const [Res, setRes] = useState<string>('');
 
   useEffect(() => {
     if (pass1 !== pass2) {
@@ -31,12 +32,21 @@ const NewPass = () => {
           body: JSON.stringify({ pass1, pass2 })
         });
 
+        setPassMatch(false);
+
         if(!res.ok){
           const Err = await res.json() as {error: string}
           setErr(Err.error)
         }
+        else{
+          setPass1('');
+          setPass2('');
+          const resJson = await res.json() as {res: string};
+          setRes(resJson.res) 
+        }
 
       } catch (error) {
+        setPassMatch(false);
         console.error(error)
         setErr('Something went wrong, please try again.')
       }
@@ -56,6 +66,10 @@ const NewPass = () => {
         }
         {err !== '' &&
           <div className="text-red-700 mb-4">{err}</div>
+        }
+
+        {Res !== '' &&
+          <div className="text-green-700 mb-4">{Res}</div>
         }
 
         <label className="mb-4 ">

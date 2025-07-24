@@ -7,20 +7,25 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node api/dist/index.js && node pages/dist/index.js && node redirect/dist/index.js" ,
+    "start": "NODE_ENV=production node api/dist/index.js  && NODE_ENV=production node pages/dist/index.js && NODE_ENV=production node redirect/dist/index.js",
     "build:api": "esbuild api/src/index.ts --bundle --platform=node --outfile=dist/index.js --format=esm  --external:node:* --external:path --packages=external",
     "build:redirect": "esbuild redirect/src/index.ts --bundle --platform=node --outfile=dist/index.js --format=esm  --external:node:* --external:path --packages=external",
-    "build:pages": "esbuild pages/src/index.ts --bundle --platform=node --outfile=dist/index.js --format=esm  --external:node:* --external:path --packages=external",
-    "dev:node_api": "node --watch api/dist/index.js",
-    "dev:node_pages": "node --watch pages/dist/index.js",
-    "dev:node_redirect": "node --watch redirect/dist/index.js",
-    "dev:tsc_api": "nodemon --watch src --ext ts --exec ts-node api/src/index.ts",
-    "dev:tsc_pages": "nodemon --watch src --ext ts --exec ts-node pages/src/index.ts",
-    "dev:tsc_redirect": "nodemon --watch src --ext ts --exec ts-node redirect/src/index.ts",
-    "check": "tsc --noEmit"
+    "build:pages": "esbuild pages/src/index.ts --bundle --platform=node --outfile=pages/dist/index.js --format=esm  --external:node:* --external:path --packages=external",
+    "dev:node_api": "NODE_ENV=production node --watch api/dist/index.js",
+    "dev:node_pages": "NODE_ENV=production node --watch pages/dist/index.js",
+    "dev:node_redirect": "NODE_ENV=production node --watch redirect/dist/index.js",
+    "dev:tsc_api": "NODE_ENV=development nodemon --watch src --ext ts --exec ts-node api/src/index.ts",
+    "dev:tsc_pages": "NODE_ENV=development nodemon --watch src --ext ts --exec ts-node pages/src/index.ts",
+    "dev:tsc_redirect": "NODE_ENV=development nodemon --watch src --ext ts --exec ts-node redirect/src/index.ts",
+    "check_api": "tsc --noEmit api/src/index.ts",
+    "check_pages": "tsc --noEmit pages/src/index.ts",
+    "check_redirect": "tsc --noEmit redirect/src/index.ts"
   },
   "type": "module",
   "dependencies": {
+    "@prisma/client": "^6.11.1",
+    "bcrypt": "^6.0.0",
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
@@ -29,6 +34,8 @@
     "zod": "^3.24.4"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/cookie-parser": "^1.4.9",
     "@types/cors": "^2.8.18",
     "@types/express": "^5.0.1",
     "@types/jsonwebtoken": "^9.0.9",

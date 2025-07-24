@@ -6,20 +6,20 @@ import { FRONTEND_PORT, API_PORT, REDIRECT_PORT, PORT } from './dotenv';
 const app = express();
 app.set('trust proxy', true);
 
-// Redirect service: pl. http://localhost:5000/abc123
+// Redirect service: pl. http://localhost:3002/abc123
 app.use(/^\/(?!api|dashboard|signin|signup|search).*/, createProxyMiddleware({
   target: `http://redirect:${REDIRECT_PORT}`,
   changeOrigin: true
 }));
 
-// User API: http://localhost:5000/api/users/login
+// User API: http://localhost:3001/api
 app.use('/api', createProxyMiddleware({
   target: `http://user:${API_PORT}`,
   changeOrigin: true,
   
 }));
 
-// Frontend: http://localhost:5000/dashboard
+// Frontend: http://localhost:3003
 app.use(['/dashboard','/signin', '/signup', '/search'], createProxyMiddleware({
   target: `http://dashboard:${FRONTEND_PORT}`,
   changeOrigin: true,

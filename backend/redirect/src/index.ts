@@ -4,6 +4,8 @@ import router from './routes/routers.ts';
 import * as path from 'path'
 import cors from 'cors'
 import { fileURLToPath } from 'url'
+import cookieParser from 'cookie-parser'
+import { SECRET_COOKIE } from './config/config.ts';
 
 
 const server = express();
@@ -13,6 +15,7 @@ server.use(express.json({
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 server.use(express.static(path.join(__dirname, '../public')));
 server.use(cors());
+server.use(cookieParser(SECRET_COOKIE))
 
 server.use(urlencoded({ extended: false }));
 server.disable("x-powered-by"); //Reduce fingerprinting
