@@ -3,7 +3,7 @@ import Graph from "./Graph"
 import { IoSettings } from "react-icons/io5";
 
 
-const UrlOfMyUrls = (props: {id: string, priv: boolean, number: number, code: string, data: number[], url:string}) => {
+const UrlOfMyUrls = (props: {id: string, number: number,  data: number[], url:string}) => {
     const [show, setShow] = useState<boolean>(false)
     return (
         <li>
@@ -15,9 +15,7 @@ const UrlOfMyUrls = (props: {id: string, priv: boolean, number: number, code: st
             {show &&
                 <div className="mt-2">
                     <div className="flex justify-between">
-                        <div>Private: {props.priv}</div>
                         <div>number: {props.number}</div>
-                        <div>code: {props.code}</div>
                         <IoSettings />
                     </div>
 

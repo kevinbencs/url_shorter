@@ -159,3 +159,7 @@ app.post('/api/logout', (req, res) => {
 
 
 A signedCookies egy olyan kifejezés, amely az aláírt cookie-k lekérdezésére szolgál az Express alkalmazásban. Az aláírás megakadályozza, hogy a kliens oldal módosítsa a cookie-kat, így biztosítva azok integritását és biztonságát. Aláírt cookie-kat akkor használhatsz, ha szükséged van a cookie tartalmának biztonságos kezelésére.
+
+
+
+Search, docker

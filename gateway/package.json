@@ -8,7 +8,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node dist/index.js",
-    "build": "esbuild src/gateway.ts --bundle --platform=node --outfile=dist/gateway.js --format=esm  --external:node:* --external:path --packages=external",
+    "build": "esbuild src/gateway.ts --bundle --platform=node --outfile=dist/index.js --format=esm  --external:node:* --external:path --packages=external",
     "dev:node": "node --watch dist/gateway.js",
     "dev:tsc": "nodemon --watch src --ext ts --exec ts-node src/gateway.ts",
     "check": "tsc --noEmit"

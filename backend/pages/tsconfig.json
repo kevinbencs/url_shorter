@@ -7,6 +7,9 @@
     "types": ["node"],
     "esModuleInterop": true,
     "allowImportingTsExtensions": true,
-    "noEmit": true
-  }
+    "noEmit": true,
+    "rootDir": "./src",
+    "outDir": "./build",
+  },
+  "include": ["src"]
 }

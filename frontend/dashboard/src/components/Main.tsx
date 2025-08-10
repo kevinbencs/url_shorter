@@ -1,7 +1,6 @@
 import DeleteAcc from './DeleteAcc'
 import MyUrl from './MyUrl'
 import NewPass from './NewPass'
-import OtherUrls from './OtherUrls'
 import { useUrls } from './UrlContext'
 
 const Main = () => {
@@ -15,8 +14,6 @@ const Main = () => {
 
 
                 {myOtherUrl === 'myUrls' && <MyUrl />}
-
-                {myOtherUrl === 'otherUrls' && <OtherUrls />}
 
                 {myOtherUrl === 'password' && <NewPass />}
 

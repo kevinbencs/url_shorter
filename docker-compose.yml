@@ -1,28 +1,83 @@
 version: '3.9'
 
 services:
-  app:
-    build: .
-    command: "npm start"
-    ports:
-      - "3000:3000"
-    depends_on:
-      - postgres
-      - mongo
 
-  dev:
-    build: .
-    command: "npm run dev:tsc"
-    volumes:
-      - .:/app
-      - /app/node_modules
+  gateway:
+    build: 
+      context: ./gateway
+    command: "npm run start"
     ports:
       - "3000:3000"
+    depends_on:
+      - api
+      - pages
+      - redirect
     environment:
-      - NODE_ENV=development
+      - NODE_ENV=production
+      - REDIRECT_PORT=3002
+      - API_PORT=3001
+      - FRONTEND_PORT=3003
+      - PORT=3000
+      
+
+
+  api:
+    build: 
+      context: ./backend/api
+    command: sh -c "npx prisma generate && ./wait-for-it.sh postgres:5432 -- npx prisma migrate deploy && npm start_pages"
+    ports:
+      - "3001:3001"
     depends_on:
       - postgres
-      - mongo
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://user:password@postgres:5432/mydb
+      - REDIRECT_PORT=3002
+      - API_PORT=3001
+      - FRONTEND_PORT=3003
+      - DATABASE_NAME=mydb
+      - DATABASE_PASSWORD=password
+      - SECRET=asdfjisdjgdsgvbfdogj
+      - SECRET_COOKIE=efsef
+
+  pages:
+    build:
+      context: .
+      dockerfile: backend/pages/Dockerfile
+    command: "npm run start"
+    ports:
+      - "3003:3003"
+    depends_on:
+      - postgres
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://user:password@postgres:5432/mydb
+      - REDIRECT_PORT=3002
+      - API_PORT=3001
+      - FRONTEND_PORT=3003
+      - DATABASE_NAME=mydb
+      - DATABASE_PASSWORD=password
+      - SECRET=asdfjisdjgdsgvbfdogj
+      - SECRET_COOKIE=efsef
+
+  redirect:
+    build: 
+      context: ./backend/redirect
+    command: "npm run start"
+    ports:
+      - "3002:3002"
+    depends_on:
+      - postgres
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://user:password@postgres:5432/mydb
+      - REDIRECT_PORT=3002
+      - API_PORT=3001
+      - FRONTEND_PORT=3003
+      - DATABASE_NAME=mydb
+      - DATABASE_PASSWORD=password
+      - SECRET=asdfjisdjgdsgvbfdogj
+      - SECRET_COOKIE=efsef
 
   postgres:
     image: postgres:15
@@ -34,12 +89,6 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
 
-  mongo:
-    image: mongo:7
-    restart: always
-    volumes:
-      - mongodata:/data/db
 
 volumes:
   pgdata:
-  mongodata:

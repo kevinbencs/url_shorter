@@ -1,8 +1,5 @@
 import pkg from 'express';
 import { PrismaClient } from '@prisma/client';
-import jwt from 'jsonwebtoken'
-import { SECRET } from '../config/config'
-import { SECRET_COOKIE } from '../config/config';
 
 const { Request, Response } = pkg
 const prisma = new PrismaClient();
@@ -72,36 +69,15 @@ export async function UrlRedirect(req: Request, res: Response): Promise<void> {
         }
 
 
-        if (url.private) {
-            const tok = await prisma.token.findUnique({
-                where: {
-                    token
-                }
-            })
+        await prisma.url.update({
+            where:{
+                new_url: target
+            },
+            data:{
+                viewer: target.viewer + 1
+            }
+        })
 
-            if (!tok) return void res.status(302).redirect('/?info=private');
-
-            const decoded = await jwt.verify(token, SECRET!)
-
-            if (!decoded) return void res.status(302).redirect('/?info=private');
-
-            const user = await prisma.user.findMany({
-                where: {
-                    email: decoded.email
-                }
-            })
-
-            if (!user) return void res.status(302).redirect('/?info=private');
-
-            const link = await prisma.anotherurl.findUnique({
-                where:{
-                    email: decoded.email,
-                    new_url: target
-                }
-            })
-
-            if(!link) return void res.status(302).redirect('/?info=private');
-        }
 
         return void res.status(302).redirect(`${url.real_url}`)
     } catch (error) {

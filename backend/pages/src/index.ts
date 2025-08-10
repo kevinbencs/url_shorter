@@ -19,6 +19,6 @@ server.disable("x-powered-by"); //Reduce fingerprinting
 server.use(router)
 
 
-server.listen(FRONTEND_PORT || 3000,() => {
+server.listen(FRONTEND_PORT || 3003,() => {
     console.log('server is running on '+FRONTEND_PORT)
 })

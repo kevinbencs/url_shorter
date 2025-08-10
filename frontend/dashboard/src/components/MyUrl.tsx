@@ -1,4 +1,4 @@
-import { useState, type SyntheticEvent, useTransition } from 'react'
+import { useState, type ChangeEvent, type SyntheticEvent, useTransition, } from 'react'
 import UrlOfMyUrls from './UrlOfMyUrls';
 import useSWR from 'swr'
 
@@ -26,10 +26,10 @@ const fetcher = async (url: string): Promise<{ res: { code: string, url: string,
 const MyUrl = () => {
     const [err, setErr] = useState<string>('')
     const [isPending, startTransition] = useTransition();
-    const [min, setMin] = useState<number>(0);
-    const [priv, setPrivate] = useState<boolean>(false)
+    const [min, setMin] = useState<string>('');
     const [once, setOnce] = useState<boolean>(false)
     const [url, setUrl] = useState<string>('')
+    const [newUrl, setNewUrl] = useState<string>('')
     const { data, error, isLoading, mutate } = useSWR('api/link/private', fetcher, { revalidateOnFocus: false })
 
     const handleSubmit = (e: SyntheticEvent) => {
@@ -44,7 +44,7 @@ const MyUrl = () => {
                         "Access-Control-Allow-Origin": "*",
 
                     },
-                    body: JSON.stringify({ min, priv, once, url })
+                    body: JSON.stringify({ min: Number(min), once, url, newUrl })
                 })
 
                 if (!res.ok) {
@@ -60,21 +60,28 @@ const MyUrl = () => {
                     }
 
                 }
+                else{
+                   mutate() 
+                }
 
-                mutate()
             } catch (error) {
                 console.error(error)
                 setErr('Something went wrong, please try again.')
             }
         })
 
-        /*const Min = e.currentTarget.elements.Minute.value === '' ? '' : Number(e.currentTarget.elements.Minute.value);
-        if (Min !== '' && (Min < 0 || Min > 7200)) alert("Minute should be between 0 and 7200 or empty.")
-        const url = e.currentTarget.elements.url_text.value;
-        const once = e.currentTarget.elements.Once_use.checked;*/
 
     }
 
+
+    const handleMinute = (e: ChangeEvent<HTMLInputElement>) => {
+        if (e.target.value === '') setMin(e.target.value)
+        else {
+            if (typeof (Number(e.target.value)) === 'number') {
+                if (String(Number(e.target.value)) === e.target.value && Number(e.target.value) < 7200 && Number(e.target.value) > 0) setMin(e.target.value)
+            }
+        }
+    }
 
     return (
         <>
@@ -89,15 +96,14 @@ const MyUrl = () => {
                     </label>
                     <label className='flex gap-5 mb-4'>
                         <input type="checkbox" name='Once_use' disabled={isPending} checked={once} onChange={(e) => setOnce(e.target.checked)} />
-                        Once use
+                        Once use (optional)
                     </label>
 
-                    <label className='flex gap-5 mb-4'>
-                        <input type="checkbox" name='Private' disabled={isPending} checked={priv} onChange={(e) => setPrivate(e.target.checked)} />
-                        Private
+                    <label className="mb-4 ">
+                        <input type="text" name="new_url_text" className="w-full border border-gray-700 rounded-3xl p-1 pl-4 pr-4 mt-2" placeholder='New url parameter (optional)' disabled={isPending} value={newUrl} onChange={(e) => setNewUrl(e.target.value)} />
                     </label>
 
-                    <input inputMode="numeric" type='text' pattern="[0-9]*" name="Minute" placeholder="Minute" min={0} max={7200} className='mb-4 w-full border border-gray-700 rounded-3xl p-1 pl-4 pr-4 mt-2' disabled={isPending} value={min} onChange={(e) => setMin(Number(e.target.value))} />
+                    <input type='text' name="Minute" placeholder="Minute (optional, max 7200)" className='mb-4 w-full border border-gray-700 rounded-3xl p-1 pl-4 pr-4 mt-2' disabled={isPending} value={min} onChange={handleMinute} />
 
                     <input type="submit" value="Add" className="cursor-pointer text-md w-full border-fuchsia-400 border pt-1 pb-1 rounded-full  hover:bg-fuchsia-400 hover:text-white " disabled={isPending} />
                 </form>
@@ -111,7 +117,7 @@ const MyUrl = () => {
                             Loading...
                             </div> }
                         {error && <div className='text-red-700'>{error}</div> }
-                        {(data && data.res) && data.res.map((item) => <UrlOfMyUrls data={item.data} code={item.code} id={item.id} url={item.url} key={item.id} number={item.number} priv={item.priv} />)}
+                        {(data && data.res) && data.res.map((item) => <UrlOfMyUrls data={item.data} id={item.id} url={item.url} key={item.id} number={item.number} />)}
 
                     </ul>
                 </section>

@@ -5,27 +5,30 @@ FROM node:23
 WORKDIR /app
 
 # Copy package
-COPY package*.json ./
+COPY  backend/pages/package*.json ./
 
 # Install dependency
 RUN npm install
 
 # Copy files of application
-COPY . .
+COPY backend/pages .
+
+COPY frontend ./frontend
+
+# Install frontend dependencies
+RUN cd frontend/dashboard && npm install
+
+# Build frontend (Vite)
+RUN cd frontend/dashboard && npm run build
 
 # 🏗️ Build step (TypeScript)
 RUN npm run build
 
 # Open port
-EXPOSE 3000
-EXPOSE 3001
-EXPOSE 3002
 EXPOSE 3003
-EXPOSE 5173
 
 #Prisma
 RUN npx prisma generate
-RUN npx prisma migrate deploy
 
 # Start app
 CMD ["npm", "start"]

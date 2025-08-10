@@ -17,15 +17,10 @@ COPY . .
 RUN npm run build
 
 # Open port
-EXPOSE 3000
 EXPOSE 3001
-EXPOSE 3002
-EXPOSE 3003
-EXPOSE 5173
 
-#Prisma
+# Prisma generate
 RUN npx prisma generate
-RUN npx prisma migrate deploy
 
 # Start app
 CMD ["npm", "start"]

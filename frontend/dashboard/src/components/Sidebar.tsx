@@ -4,7 +4,6 @@ import { ImExit } from "react-icons/im";
 import { IoSearchSharp } from "react-icons/io5";
 import { RiDashboardFill } from "react-icons/ri";
 import { MdDeleteForever } from "react-icons/md";
-import { GrDashboard } from "react-icons/gr";
 import { CgPassword } from "react-icons/cg";
 
 
@@ -21,10 +20,6 @@ const Sidebar = () => {
         clickExit();
     }
 
-    const clickOtherUrls = () => {
-        setMyOtherUrls('otherUrls');
-        clickExit();
-    }
 
     const clickPassword = () => {
         setMyOtherUrls('password');
@@ -57,7 +52,6 @@ const Sidebar = () => {
 
                 <section className="list-none mt-14 text-md flex flex-col  ">
                     <li><button className={`cursor-pointer flex gap-2 items-center hover:pl-4 duration-200 p-3 pl-1 w-44 ${(myOtherUrl === 'myUrls' && !delAcc) ? 'bg-fuchsia-400': ''}`} onClick={clickMyUrls}> <RiDashboardFill /> <span>My urls</span></button></li>
-                    <li><button className={`cursor-pointer flex gap-2 items-center hover:pl-4 duration-200 p-3 pl-1 w-44 ${(myOtherUrl === 'otherUrls'  && !delAcc) ? 'bg-fuchsia-400': ''}`} onClick={clickOtherUrls}> <GrDashboard /> <span>Other urls</span></button> </li>
                     <li><a href="/search" className="cursor-pointer flex gap-2 items-center hover:pl-4 duration-200 p-3 pl-1 w-44"><IoSearchSharp /> <span>Search</span></a></li>
                     <li><button className={`cursor-pointer flex gap-2 items-center hover:pl-4 duration-200 p-3 pl-1 w-44 ${(myOtherUrl === 'password'  && !delAcc) ? 'bg-fuchsia-400': ''}`} onClick={clickPassword}> <CgPassword /> <span>New password</span></button></li>
                     <li><button className={`cursor-pointer flex gap-2 items-center hover:pl-4 duration-200 p-3 pl-1 w-44  ${delAcc === true ? 'bg-fuchsia-400': ''}`} onClick={clickDell}> <MdDeleteForever /><span>Delete account</span></button></li>

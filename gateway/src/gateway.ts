@@ -14,14 +14,14 @@ app.use(/^\/(?!api|dashboard|signin|signup|search).*/, createProxyMiddleware({
 
 // User API: http://localhost:3001/api
 app.use('/api', createProxyMiddleware({
-  target: `http://user:${API_PORT}`,
+  target: `http://api:${API_PORT}`,
   changeOrigin: true,
   
 }));
 
 // Frontend: http://localhost:3003
 app.use(['/dashboard','/signin', '/signup', '/search'], createProxyMiddleware({
-  target: `http://dashboard:${FRONTEND_PORT}`,
+  target: `http://pages:${FRONTEND_PORT}`,
   changeOrigin: true,
   pathRewrite:{
     '^/signin': '/signin',

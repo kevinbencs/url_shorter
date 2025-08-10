@@ -1,10 +1,32 @@
 import { useEffect, useState } from "react";
 import { useSidebar } from "./SidebarContext"
 import ThemeToggle from "./Themetoogle";
+import useSWR from 'swr'
+
+const fetcher = async (url: string): Promise<{  name: string  }> => {
+    try {
+        const res = await fetch(url);
+
+        if (!res.ok) {
+            const errorMessage = await res.json().then(data => data.error || "unknown error");
+            console.error(errorMessage)
+
+            throw new Error(errorMessage);
+        }
+
+        return res.json()
+
+    } catch (error) {
+        console.error(error)
+        throw new Error('Server error');
+    }
+}
+
 
 const Header = () => {
     const { setShowSidebar } = useSidebar();
-    const [shadow, setShadow] = useState('')
+    const [shadow, setShadow] = useState('');
+    const { data, error, isLoading, } = useSWR('api/name', fetcher, { revalidateOnFocus: false })
 
     useEffect(() => {
         function getShadow() {
@@ -39,7 +61,16 @@ const Header = () => {
                     
                     <div className="flex gap-4 items-center">
                         <ThemeToggle />
-                        <div >Name</div>
+                        {isLoading && 
+                            <div></div>
+                        }
+                        {error && 
+                            <div>Server error</div>
+                        }
+                        {data && 
+                            <div> {data.name}</div>
+                        }
+                        
                     </div>
 
                 </div>

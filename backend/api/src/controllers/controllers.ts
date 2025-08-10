@@ -2,7 +2,7 @@ import pkg from 'express';
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken'
-import { SECRET, SECRET_COOKIE } from '../config/config';
+import { SECRET } from '../config/config';
 
 const { Request, Response } = pkg
 const prisma = new PrismaClient();
@@ -128,12 +128,21 @@ export async function AddLinks(req: Request, res: Response): Promise<void> {
         const email = req.user.email;
         const body = await req.json()
 
+        const length = 6;
+        let result = '';
+        const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+        const charactersLength = characters.length;
+        for (let i = 0; i < length; i++) {
+            result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+
+
+
         const link = await prisma.url.create({
             data: {
                 email,
-                new_url: body.new_url,
+                new_url: result,
                 real_url: body.real_url,
-                private: body.private,
                 time: body.time,
                 once: body.once
             }
@@ -220,44 +229,6 @@ export async function UpdateLink(req: Request, res: Response): Promise<void> {
 
 
 
-//POST request - Add not own links
-export async function AddPrivateLinks(req: Request, res: Response): Promise<void> {
-    try {
-        const user = req.user;
-        const body = await req.json()
-
-        const add = await prisma.anotherurl.create({
-            date: {
-                new_url: body.new_url,
-                email: user.email,
-                private: body.private
-            }
-        })
-
-        return void res.status(200).json({ message: 'Link added' })
-    } catch (error) {
-        console.log(error)
-        return void res.status(500).json({ error: 'Internal server error.' })
-    }
-}
-
-//GEt request - Get not own links
-export async function GetPrivateLinks(req: Request, res: Response): Promise<void> {
-    try {
-
-        const user = req.user;
-
-        const links = await prisma.anotherurl.findMany({
-            where: {
-                email: user.email
-            }
-        })
-        return void res.status(200).json({ message: links })
-    } catch (error) {
-        console.log(error)
-        return void res.status(500).json({ error: 'Internal server error.' })
-    }
-}
 
 //DELETE request - Delete account
 export async function DeleteAccount(req: Request, res: Response): Promise<void> {
@@ -317,6 +288,19 @@ export async function UpdatePassword(req: Request, res: Response): Promise<void>
         return void res.status(200).json({ message: 'Password changed' })
     } catch (error) {
         console.log(error)
+        return void res.status(500).json({ error: 'Internal server error.' })
+    }
+}
+
+//GET request - Get user name
+export async function GetName(req: Request, res: Response): Promise<void> {
+    try {
+        const name = req.user.name
+
+        return void res.status(200).json({name});
+
+    } catch (error) {
+        console.log(error);
         return void res.status(500).json({ error: 'Internal server error.' })
     }
 }

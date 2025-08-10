@@ -1,6 +1,5 @@
 const Pass = document.getElementById('Password');
 const Email = document.getElementById('Email');
-const Name = document.getElementById('Name');
 
 const Form = document.getElementById('Form');
 
@@ -19,14 +18,14 @@ Form.addEventListener('submit', async (e) => {
             if (canSubmit) {
 
                 canSubmit = false;
-                const res = await fetch('/api/signup', {
+                const res = await fetch('/api/signin', {
                     method: 'POST',
                     header: {
                         "Accept": "application/json, text/plain",
                         "Content-type": "application/json",
                         "Access-Control-Allow-Origin": "*",
                     },
-                    body: JSON.stringify({password: Pass.value, email: Email.value, name: Name.value})
+                    body: JSON.stringify({password: Pass.value, email: Email.value})
                 })
 
 
