@@ -35,8 +35,6 @@ services:
       - REDIRECT_PORT=3002
       - API_PORT=3001
       - FRONTEND_PORT=3003
-      - DATABASE_NAME=mydb
-      - DATABASE_PASSWORD=password
       - SECRET=asdfjisdjgdsgvbfdogj
       - SECRET_COOKIE=efsef
 
@@ -55,8 +53,6 @@ services:
       - REDIRECT_PORT=3002
       - API_PORT=3001
       - FRONTEND_PORT=3003
-      - DATABASE_NAME=mydb
-      - DATABASE_PASSWORD=password
       - SECRET=asdfjisdjgdsgvbfdogj
       - SECRET_COOKIE=efsef
 
@@ -74,8 +70,6 @@ services:
       - REDIRECT_PORT=3002
       - API_PORT=3001
       - FRONTEND_PORT=3003
-      - DATABASE_NAME=mydb
-      - DATABASE_PASSWORD=password
       - SECRET=asdfjisdjgdsgvbfdogj
       - SECRET_COOKIE=efsef
 
