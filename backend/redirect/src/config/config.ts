@@ -2,6 +2,6 @@ import * as dotenv from 'dotenv'
 
 dotenv.config();
 
-const {REDIRECT_PORT, DATABASE_PORT, DATABASE_NAME, DATABASE_PASSWORD, SECRET, SECRET_COOKIE} = process.env;
+const {PORT,  SECRET, SECRET_COOKIE, } = process.env;
 
-export {REDIRECT_PORT, DATABASE_PORT, DATABASE_NAME, DATABASE_PASSWORD, SECRET, SECRET_COOKIE};
+export {PORT, SECRET, SECRET_COOKIE, };

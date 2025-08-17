@@ -8,6 +8,8 @@ services:
     command: "npm run start"
     ports:
       - "3000:3000"
+    mem_limit: 512m
+    cpus: 0.5
     depends_on:
       - api
       - pages
@@ -24,62 +26,65 @@ services:
   api:
     build: 
       context: ./backend/api
-    command: sh -c "npx prisma generate && ./wait-for-it.sh postgres:5432 -- npx prisma migrate deploy && npm start_pages"
-    ports:
+    command: sh -c " npx wait-on tcp:postgres:5432 && npx prisma migrate deploy && npm start"
+    expose:
       - "3001:3001"
+    mem_limit: 1g
+    cpus: 1
     depends_on:
       - postgres
     environment:
       - NODE_ENV=production
-      - DATABASE_URL=postgresql://user:password@postgres:5432/mydb
-      - REDIRECT_PORT=3002
-      - API_PORT=3001
-      - FRONTEND_PORT=3003
-      - SECRET=asdfjisdjgdsgvbfdogj
-      - SECRET_COOKIE=efsef
+      - DATABASE_URL=${DATABASE_URL}
+      - PORT=3001
+      - SECRET=${SECRET}
+      - SECRET_COOKIE=${SECRET_COOKIE}
+
 
   pages:
     build:
       context: .
       dockerfile: backend/pages/Dockerfile
     command: "npm run start"
-    ports:
+    expose:
       - "3003:3003"
+    mem_limit: 512m
+    cpus: 0.5
     depends_on:
       - postgres
     environment:
       - NODE_ENV=production
-      - DATABASE_URL=postgresql://user:password@postgres:5432/mydb
-      - REDIRECT_PORT=3002
-      - API_PORT=3001
-      - FRONTEND_PORT=3003
-      - SECRET=asdfjisdjgdsgvbfdogj
-      - SECRET_COOKIE=efsef
+      - DATABASE_URL=${DATABASE_URL}
+      - PORT=3003
+      - SECRET=${SECRET}
+      - SECRET_COOKIE=${SECRET_COOKIE}
+
 
   redirect:
     build: 
       context: ./backend/redirect
     command: "npm run start"
-    ports:
+    expose:
       - "3002:3002"
+    mem_limit: 512m
+    cpus: 0.5
     depends_on:
       - postgres
     environment:
       - NODE_ENV=production
-      - DATABASE_URL=postgresql://user:password@postgres:5432/mydb
-      - REDIRECT_PORT=3002
-      - API_PORT=3001
-      - FRONTEND_PORT=3003
-      - SECRET=asdfjisdjgdsgvbfdogj
-      - SECRET_COOKIE=efsef
+      - DATABASE_URL=${DATABASE_URL}
+      - PORT=3002
+
 
   postgres:
     image: postgres:15
     restart: always
+    mem_limit: 1g
+    cpus: 1
     environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: mydb
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     volumes:
       - pgdata:/var/lib/postgresql/data
 

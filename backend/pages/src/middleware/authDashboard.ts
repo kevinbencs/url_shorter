@@ -7,33 +7,23 @@ import { SECRET } from '../config/config.ts';
 const { Request, Response, NextFunction } = pkg
 
 export async function authenticateToken(req: Request, res: Response, next: NextFunction) {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1]; // Bearer token
-  
+
+  const token = req.signedCookies['user'];
+
+  console.log(token)
+
   if (!token) {
-    if (req.url === `/dashboard`) return res.status(302).redirect(`/signin`);
+    console.log(1)
+    return res.status(302).redirect(`/signin`);
 
-    //if (req.params.url) return res.status(302).redirect('/');
-    next();
   }
-  else{
+  else {
     jwt.verify(token, SECRET, (err, user) => {
-    if (err) {
-      if (req.url === `/dashboard`) return res.status(302).redirect(`/signin`);
-
-      //if (req.params.url) return res.status(302).redirect('/');
+      if (err) {
+         return res.status(302).redirect(`/signin`);
+      }
       next();
-    }
-
-    if((req.url === `/` || req.url === `/signin` || req.url === `/signup`)){
-      return res.status(302).redirect(`/dashboard`)
-    }
-
-    // @ts-ignore
-    req.user = user; // kiegészítjük a request objektumot
-    next();
-  });
+    });
   }
 
-  
 }

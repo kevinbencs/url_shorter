@@ -1,5 +1,5 @@
 import express, {urlencoded} from 'express';
-import { API_PORT } from './config/config.ts';
+import { PORT } from './config/config.ts';
 import router from './routes/routers.ts';
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
@@ -18,6 +18,6 @@ server.disable("x-powered-by"); //Reduce fingerprinting
 server.use(router)
 
 
-server.listen(API_PORT || 3000,() => {
-    console.log('server is running on '+API_PORT)
+server.listen(PORT || 3000,() => {
+    console.log('server is running on '+PORT)
 })

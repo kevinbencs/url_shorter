@@ -3,7 +3,7 @@ import { AddLinks, DeleteAccount, DeleteLink, GetLinkInformation, GetLinks, GetN
 import { validateData } from "../middleware/validate.ts";
 import { LinkSchema, RegisterSchema, SearchSchema, SingInSchema } from "../schema/schema.ts";
 import { Verify } from "../middleware/verify.ts";
-
+import { loginLimiter } from "../middleware/rateLimit.ts";
 
 const router = Router();
 
@@ -12,7 +12,7 @@ const router = Router();
 router.post('/api/signup', validateData(RegisterSchema), Register)
 
 //Login route
-router.post('/api/signin', validateData(SingInSchema), LogIn)
+router.post('/api/signin', loginLimiter, validateData(SingInSchema), LogIn)
 
 //Logout route
 router.get('/api/logout', LogOut)

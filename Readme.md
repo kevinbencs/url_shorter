@@ -10,26 +10,26 @@ Technologies used: `react (vite), node.js, express, typescript, html, tailwindCS
 
 ## Api Requests
 
-Post /api/signup
+- Post /api/signup
 
-Post /api/signin
+- Post /api/signin
 
-Get /api/logout
+- Get /api/logout
 
-Get /api/links
+- Get /api/links
 
-Post /api/links
+- Post /api/links
 
-Delete /api/link/:id
+- Delete /api/link/:id
 
-Patch /api/link/:id
+- Patch /api/link/:id
 
-Delete /api/link/:id
+- Delete /api/link/:id
 
-Delete /api/delete/acc
+- Delete /api/delete/acc
 
-Patch /api/update/password
+- Patch /api/update/password
 
-Post /api/search/:url
+- Post /api/search/:url
 
-Get /api/name
+- Get /api/name

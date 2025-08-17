@@ -1,23 +1,25 @@
 import {Router} from "express";
 import { GetDashboardPage, GetHomePage,  GetSearchPage, GetSigUpPage, GetSignInPage } from "../controllers/controllers.ts";
 import { authenticateToken } from "../middleware/authDashboard.ts";
+import { redDash } from "../middleware/redirectDashboard.ts";
 
 
 const router = Router();
 
-router.use(authenticateToken)
 
 //Get Home page
-router.get('/', GetHomePage)
+router.get('/', redDash,GetHomePage)
 
 //Get Sign in page
-router.get('/signin',GetSignInPage)
+router.get('/signin',redDash,GetSignInPage)
 
 //Get Sign up page
-router.get('/signup',GetSigUpPage)
+router.get('/signup',redDash,GetSigUpPage)
 
-//Get Dashboard page
-router.get('/dashboard',GetDashboardPage)
+
+//Get Sign up page
+router.get(/^\/dashboard(\/.*)?$/,authenticateToken,GetDashboardPage)
+
 
 //Get Search page
 router.get('/search',GetSearchPage)

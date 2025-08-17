@@ -1,13 +1,23 @@
 import express from 'express'
 import { createProxyMiddleware } from 'http-proxy-middleware'
 import { FRONTEND_PORT, API_PORT, REDIRECT_PORT, PORT } from './dotenv';
+import { rateLimit } from 'express-rate-limit'
 
 
 const app = express();
 app.set('trust proxy', true);
 
-// Redirect service: pl. http://localhost:3002/abc123
-app.use(/^\/(?!api|dashboard|signin|signup|search).*/, createProxyMiddleware({
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,                  
+  message: "Too many request. Please try again later (15 min)."
+});
+
+
+app.use(limiter);
+
+// Redirect
+app.use(/^\/r\/.*/, createProxyMiddleware({
   target: `http://redirect:${REDIRECT_PORT}`,
   changeOrigin: true
 }));
@@ -16,19 +26,16 @@ app.use(/^\/(?!api|dashboard|signin|signup|search).*/, createProxyMiddleware({
 app.use('/api', createProxyMiddleware({
   target: `http://api:${API_PORT}`,
   changeOrigin: true,
-  
+
 }));
 
-// Frontend: http://localhost:3003
-app.use(['/dashboard','/signin', '/signup', '/search'], createProxyMiddleware({
+//Frontend
+app.use('/', createProxyMiddleware({
   target: `http://pages:${FRONTEND_PORT}`,
-  changeOrigin: true,
-  pathRewrite:{
-    '^/signin': '/signin',
-    '^/signup': '/signup',
-    '^/search': '/search',
-    '^/dashboard': '/dashboard'
-  }
+  changeOrigin: true
 }));
+
+
+
 
 app.listen(PORT, () => console.log(`Gateway running on http://localhost:${PORT}`));

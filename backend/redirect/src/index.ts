@@ -1,5 +1,5 @@
 import express, {urlencoded} from 'express';
-import { REDIRECT_PORT } from './config/config.ts';
+import { PORT } from './config/config.ts';
 import router from './routes/routers.ts';
 import * as path from 'path'
 import cors from 'cors'
@@ -22,6 +22,6 @@ server.disable("x-powered-by"); //Reduce fingerprinting
 server.use(router)
 
 
-server.listen(REDIRECT_PORT || 3000,() => {
-    console.log('server is running on '+REDIRECT_PORT)
+server.listen(PORT || 3000,() => {
+    console.log('server is running on '+PORT)
 })
