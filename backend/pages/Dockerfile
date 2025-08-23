@@ -21,7 +21,16 @@ RUN cd frontend/dashboard && npm install
 # Build frontend (Vite)
 RUN cd frontend/dashboard && npm run build
 
-# 🏗️ Build step (TypeScript)
+# Build js from ts
+RUN cd frontend/pages && npx tsc
+
+# Copy html from src to dist
+RUN cd frontend/pages && cp ./src/*.html ./dist 
+
+# Make CSS
+RUN cd frontend/pages npx @tailwindcss/cli -i ./src/index.css -o ./dist/output.css
+
+# Build step (TypeScript)
 RUN npm run build
 
 # Open port

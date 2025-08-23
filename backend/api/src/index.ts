@@ -1,7 +1,6 @@
 import express, {urlencoded} from 'express';
 import { PORT } from './config/config.ts';
 import router from './routes/routers.ts';
-import cors from 'cors'
 import cookieParser from 'cookie-parser'
 import { SECRET_COOKIE } from './config/config.ts';
 
@@ -10,7 +9,6 @@ const server = express();
 server.use(express.json({
     type: ['application/json', 'text/plain']
 }));
-server.use(cors());
 server.use(cookieParser(SECRET_COOKIE))
 
 server.use(urlencoded({ extended: false }));

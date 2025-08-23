@@ -9,11 +9,7 @@ const { Request, Response, NextFunction } = pkg
 export async function authenticateToken(req: Request, res: Response, next: NextFunction) {
 
   const token = req.signedCookies['user'];
-
-  console.log(token)
-
   if (!token) {
-    console.log(1)
     return res.status(302).redirect(`/signin`);
 
   }

@@ -13,7 +13,7 @@ RUN npm install
 # Copy files of application
 COPY . .
 
-# 🏗️ Build step (TypeScript)
+# Build step (TypeScript)
 RUN npm run build
 
 # Open port
