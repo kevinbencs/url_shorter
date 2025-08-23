@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="./output.css" rel="stylesheet">
+    <title>Url shorter</title>
+</head>
+
+<body class="min-h-screen bg-linear-to-b bg-gray-600 ">
+    <header class="text-gray-50">
+        <nav class="pt-10 mr-5 ml-5 flex justify-around">
+            <a href="/">
+                <h1 class="text-3xl italic font-[cursive] font-bold text-fuchsia-400">USr</h1>
+            </a>
+            <section class="flex gap-6 text-xl rounded-2xl bg-gray-400">
+                <a href="/signin" class="m-1 ml-2 pl-2">Sign in</a>
+                <a href="/signup" class="bg-fuchsia-400 p-1 pr-2 pl-2 rounded-2xl">Sign up</a>
+            </section>
+        </nav>
+    </header>
+    <div class="fixed top-0 left-0 block w-full text-5xl bg-[rgba(30,30,30,0.4)] ">
+        <div class=" w-full text-5xl  text-red-500 text-center js-info"></div>
+    </div>
+    
+    <main>
+        <div class=" mt-[15vh] flex justify-center">
+            <a href="/signin" class="text-white text-5xl"> Get started for free</a>
+        </div>
+        <div class="flex justify-center mt-20 ">
+            <form action=""
+                class="w-full ml-2 mr-2 xl:ml-0 xl:mr-0 xl:w-[50%] rounded-3xl bg-gray-200 h-100 p-10 flex flex-col items-start justify-start gap-12" id="Search">
+                <h2 class="text-3xl">Search url information</h2>
+                <label class="w-full">
+                    <div class="text-2xl mb-3">Paste your url</div>
+                    <input type="text" name="Url" class="border-gray-700 border  rounded-3xl p-3 w-full text-2xl">
+                </label>
+                <input type="submit" value="Search" class="text-2xl border-fuchsia-400 border p-5 rounded-full pr-20 hover:bg-fuchsia-400 hover:text-white cursor-pointer">
+            </form>
+        </div>
+
+    </main>
+    <script src="home.js"></script>
+</body>
+
+</html>
