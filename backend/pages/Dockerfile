@@ -22,13 +22,13 @@ RUN cd frontend/dashboard && npm install
 RUN cd frontend/dashboard && npm run build
 
 # Build js from ts
-RUN cd frontend/pages && npx tsc
+RUN cd frontend/pages && npm install && npx tsc
 
 # Copy html from src to dist
 RUN cd frontend/pages && cp ./src/*.html ./dist 
 
 # Make CSS
-RUN cd frontend/pages npx @tailwindcss/cli -i ./src/index.css -o ./dist/output.css
+RUN cd frontend/pages && npx @tailwindcss/cli -i ./src/index.css -o ./dist/output.css
 
 # Build step (TypeScript)
 RUN npm run build

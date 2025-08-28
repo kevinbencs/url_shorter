@@ -21,7 +21,7 @@ server.use(urlencoded({ extended: false }));
 server.disable("x-powered-by"); 
 server.use('/dashboard', authenticateToken);
 server.use('/dashboard',express.static(path.join(__dirname, '../frontend/dashboard/dist')));
-server.use(express.static(path.join(__dirname, '../frontend')));
+server.use(express.static(path.join(__dirname, '../frontend/pages/dist')));
 server.use(router)
 
 

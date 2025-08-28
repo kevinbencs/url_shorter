@@ -13,6 +13,8 @@ dist
 
 generated
 
+examples.http
+
 build
 index.css
 

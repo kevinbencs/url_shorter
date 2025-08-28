@@ -11,11 +11,11 @@ server.use(express.json({
 }));
 server.use(cookieParser(SECRET_COOKIE))
 
-server.use(urlencoded({ extended: false }));
+server.use(urlencoded({ extended: true }));
 server.disable("x-powered-by"); //Reduce fingerprinting
 server.use(router)
 
 
-server.listen(PORT || 3000,() => {
+server.listen(PORT || 3001,() => {
     console.log('server is running on '+PORT)
 })

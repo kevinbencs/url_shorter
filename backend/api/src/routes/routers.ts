@@ -9,40 +9,40 @@ const router = Router();
 
 
 //Register route
-router.post('/api/signup', validateData(RegisterSchema), Register)
+router.post('/signup', validateData(RegisterSchema), Register)
 
 //Login route
-router.post('/api/signin', loginLimiter, validateData(SingInSchema), LogIn)
+router.post('/signin', loginLimiter, validateData(SingInSchema), LogIn)
 
 //Logout route
-router.get('/api/logout', LogOut)
+router.get('/logout', LogOut)
 
 //Get links
-router.get('/api/links', Verify, GetLinks)
+router.get('/links', Verify, GetLinks)
 
 //Add link
-router.post('/api/links', Verify, validateData(LinkSchema), AddLinks)
+router.post('/links', Verify, validateData(LinkSchema), AddLinks)
 
 //Delete link
-router.delete('/api/link/:id', Verify, DeleteLink)
+router.delete('/link/:id', Verify, DeleteLink)
 
 //Update link
-router.patch('/api/link/:id', Verify, validateData(LinkSchema), UpdateLink)
+router.patch('/link/:id', Verify, validateData(LinkSchema), UpdateLink)
 
 //Delete link
-router.delete('/api/link/:id', Verify, DeleteLink)
+router.delete('/link/:id', Verify, DeleteLink)
 
 //Delete account
-router.delete('/api/delete/acc', Verify, DeleteAccount)
+router.delete('/delete/acc', Verify, DeleteAccount)
 
 //Update password
-router.patch('/api/update/password', Verify, validateData(LinkSchema), UpdatePassword)
+router.patch('/update/password', Verify, validateData(LinkSchema), UpdatePassword)
 
 //Post search
-router.post('/api/search/:url', validateData(SearchSchema), GetLinkInformation)
+router.post('/search/:url', validateData(SearchSchema), GetLinkInformation)
 
 //Get name
-router.get('/api/name',Verify, GetName)
+router.get('/name',Verify, GetName)
 
 
 

@@ -1,6 +1,5 @@
 import pkg from 'express';
 import { PrismaClient } from '@prisma/client';
-import { PORT } from '../config/config';
 
 const { Request, Response } = pkg
 const prisma = new PrismaClient();
@@ -28,7 +27,7 @@ export async function UrlRedirect(req: Request, res: Response): Promise<void> {
         const target = req.params.url;
 
         if (target.includes('.') || req.originalUrl.includes('.')) {
-            return void res.status(302).redirect('http://gateway:${PORT}')
+            return void res.status(302).redirect('/')
         }
 
         const url = await prisma.url.findUnique({
@@ -41,7 +40,7 @@ export async function UrlRedirect(req: Request, res: Response): Promise<void> {
         console.log(url);
 
         if (!url || (url.once && url.viewer > 0) || (url.time > 0 && (now - Number(url.createdAt)) > url.time)) {
-            return void res.status(302).redirect(`http://gateway:${PORT}/?info=no_url`);
+            return void res.status(302).redirect(`/?info=no_url`);
         }
 
         if (token) {
@@ -76,7 +75,7 @@ export async function UrlRedirect(req: Request, res: Response): Promise<void> {
                 new_url: target
             },
             data:{
-                viewer: target.viewer + 1
+                viewer: url.viewer + 1
             }
         })
 

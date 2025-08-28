@@ -7,7 +7,7 @@
 
     const ErrorDiv = document.getElementById('Error');
 
-
+    console.log(2)
 
 
     let canSubmit = true;

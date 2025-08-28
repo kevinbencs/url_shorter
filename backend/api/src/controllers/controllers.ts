@@ -10,8 +10,8 @@ const prisma = new PrismaClient();
 //POST request - Sing up
 export async function Register(req: Request, res: Response): Promise<void> {
     try {
-
-        const body = await req.json() as { email: string, password: string, name: string }
+        
+        const body = req.body as { email: string, password: string, name: string }
 
         const hashedPassword = await bcrypt.hash(body.password, 10);
 
@@ -22,7 +22,7 @@ export async function Register(req: Request, res: Response): Promise<void> {
                 name: body.name,
             }
         })
-        return void res.status(200).json({ message: 'Logged in' })
+        return void res.status(200).json({ message: 'Signed up' })
     } catch (error) {
         console.log(error)
         return void res.status(500).json({ error: 'Internal server error.' })
@@ -32,7 +32,7 @@ export async function Register(req: Request, res: Response): Promise<void> {
 //POST request - Sing in
 export async function LogIn(req: Request, res: Response): Promise<void> {
     try {
-        const body = await req.json() as { email: string, password: string }
+        const body = req.body as { email: string, password: string }
 
         const user = await prisma.user.findUnique({
             where: {
@@ -56,7 +56,7 @@ export async function LogIn(req: Request, res: Response): Promise<void> {
             sameSite: 'lax'
         };
 
-        const token = jwt.sign(user.email, SECRET);
+        const token = jwt.sign(user.id, SECRET);
 
         const Tok = await prisma.token.create({
             data: {
@@ -77,7 +77,7 @@ export async function LogIn(req: Request, res: Response): Promise<void> {
 export async function LogOut(req: Request, res: Response): Promise<void> {
     try {
 
-        const token = req.signedCookies("user");
+        const token = req.signedCookies['user'];
 
         if (!token) return void res.status(302).redirect('/');
 
@@ -126,7 +126,7 @@ export async function GetLinks(req: Request, res: Response): Promise<void> {
 export async function AddLinks(req: Request, res: Response): Promise<void> {
     try {
         const email = req.user.email;
-        const body = await req.json()
+        const body =  req.body;
 
         const length = 6;
         let result = '';
@@ -205,7 +205,7 @@ export async function UpdateLink(req: Request, res: Response): Promise<void> {
 
         const email = req.user.email;
         const id = await req.params;
-        const body = await req.json()
+        const body = req.body
 
         const up = await prisma.url.update({
             where: {
@@ -276,7 +276,7 @@ export async function DeleteAccount(req: Request, res: Response): Promise<void> 
 export async function UpdatePassword(req: Request, res: Response): Promise<void> {
     try {
         const email = req.user.email;
-        const body = await req.json();
+        const body = req.body;
         const del = await prisma.user.update({
             where: {
                 email
