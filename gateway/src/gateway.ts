@@ -1,4 +1,4 @@
-import express from 'express'
+import express, { urlencoded } from 'express'
 import { createProxyMiddleware } from 'http-proxy-middleware'
 import { FRONTEND_PORT, API_PORT, REDIRECT_PORT, PORT } from './dotenv';
 import { rateLimit } from 'express-rate-limit'
@@ -8,7 +8,7 @@ import cors from "cors";
 
 
 const app = express();
-app.set('trust proxy', true);
+
 
 app.use(helmet({
   contentSecurityPolicy: {
@@ -26,7 +26,7 @@ app.use(helmet({
 }
 ));
 
-app.use(express.json({ limit: "1mb" }));
+
 
 app.use(cors({
   origin: "http://localhost:3000",
@@ -43,23 +43,35 @@ const limiter = rateLimit({
 
 app.use(limiter);
 
+
 // Redirect
 app.use('/r', createProxyMiddleware({
   target: `http://redirect:${REDIRECT_PORT}`,
-  changeOrigin: true
+  changeOrigin: true,
+  onError: (err, req, res) => {
+    console.error("Proxy error:", err);
+    res.status(500).send("Proxy error");
+  }
 }));
 
 // User API
 app.use('/api', createProxyMiddleware({
   target: `http://api:${API_PORT}`,
   changeOrigin: true,
-
+  onError: (err, req, res) => {
+    console.error("Proxy error:", err);
+    res.status(500).send("Proxy error");
+  }
 }));
 
 //Frontend
 app.use('/', createProxyMiddleware({
   target: `http://pages:${FRONTEND_PORT}`,
-  changeOrigin: true
+  changeOrigin: true,
+  onError: (err, req, res) => {
+    console.error("Proxy error:", err);
+    res.status(500).send("Proxy error");
+  }
 }));
 
 

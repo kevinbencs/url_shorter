@@ -39,16 +39,18 @@ export async function LogIn(req: Request, res: Response): Promise<void> {
                 email: body.email,
             }
         })
-
-        if (user) return void res.status(401).json({ Error: 'Invalid email or password. Please try again with the correct credentials' })
-
+        console.log(body);
+        console.log(user);
+        console.log(2)
+        if (!user) return void res.status(401).json({ error: 'Invalid email or password. Please try again with the correct credentials' })
+            console.log(3)
         const isPasswordValid = await bcrypt.compare(
             `${body.password}`,
             user.password
         );
 
-        if (!isPasswordValid) return void res.status(401).json({ Error: 'Invalid email or password. Please try again with the correct credentials' })
-
+        if (!isPasswordValid) return void res.status(401).json({ error: 'Invalid email or password. Please try again with the correct credentials' })
+            console.log(4)
         let options = {
             signed: true,
             httpOnly: true, // The cookie is only accessible by the web server
@@ -56,7 +58,7 @@ export async function LogIn(req: Request, res: Response): Promise<void> {
             sameSite: 'lax'
         };
 
-        const token = jwt.sign(user.id, SECRET);
+        const token = jwt.sign({ id: user.id }, SECRET, { expiresIn: "1h" } );
 
         const Tok = await prisma.token.create({
             data: {

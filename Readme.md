@@ -52,3 +52,14 @@ Technologies used: `react (vite), node.js, express, typescript, html, tailwindCS
 - Post /api/search/:url
 
 - Get /api/name
+
+
+
+
+HTTP/1.1 504 Gateway Timeout
+X-Powered-By: Express
+Date: Fri, 29 Aug 2025 13:23:21 GMT
+Connection: close
+Transfer-Encoding: chunked
+
+Error occurred while trying to proxy: localhost:3000/signup

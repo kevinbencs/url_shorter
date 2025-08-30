@@ -1,9 +1,11 @@
 import pkg from 'express';
 import jwt from 'jsonwebtoken';
+import { PrismaClient } from '@prisma/client';
 import { SECRET } from '../config/config.ts';
 
 
 const { Request, Response, NextFunction } = pkg
+const prisma = new PrismaClient();
 
 export async function redDash(req: Request, res: Response, next: NextFunction) {
 
@@ -19,9 +21,9 @@ export async function redDash(req: Request, res: Response, next: NextFunction) {
 
       if (tok && tok.use) {
         const decoded = jwt.verify(token, SECRET);
-
+        
         if (decoded) {
-
+          
           const user = await prisma.user.findUnique({
             where: {
               id: decoded.id

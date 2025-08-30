@@ -2,12 +2,34 @@
     const Pass = document.getElementById('Password') as HTMLInputElement | null;
     const Email = document.getElementById('Email') as HTMLInputElement | null;
     const Name = document.getElementById('Name') as HTMLInputElement | null;
-
+    const PassChanger = document.getElementById('pass_changer') as HTMLButtonElement | null;
+    const Display = document.getElementsByClassName('js-display');
+    const Hide = document.getElementsByClassName('js-hide');
     const Form = document.getElementById('Form');
 
     const ErrorDiv = document.getElementById('Error');
+    const MessageDiv = document.getElementById('Message');
 
-    console.log(2)
+    let passType = 'password';
+
+    PassChanger?.addEventListener('click', async (e) => {
+        e.preventDefault();
+        if (passType === 'password') {
+            passType = 'text';
+            Display[0]?.classList.add('hidden');
+            Hide[0]?.classList.remove('hidden');
+            
+        }
+        else {
+            passType = 'password';
+            Hide[0]?.classList.add('hidden');
+            Display[0]?.classList.remove('hidden');
+        }
+
+        if(Pass) {
+            Pass.type = passType;
+        }
+    })
 
 
     let canSubmit = true;
@@ -43,11 +65,19 @@
                                     ErrorDiv.innerHTML = `<div>${resJSON.error}</div>`
                                 }
                             }
-                            if (resJSON.failed.length > 0) {
+                            if (resJSON.failed && resJSON.failed.length > 0) {
                                 console.log(resJSON.failed)
                                 if (ErrorDiv) {
-                                    ErrorDiv.innerHTML = `${resJSON.failed.map((item: {message:string}) => `<div>${item.message}</div>`).join('')}`
+                                    ErrorDiv.innerHTML = `${resJSON.failed.map((item: { message: string }) => `<div>${item.message}</div>`).join('')}`
                                 }
+                            }
+                            if(resJSON.message){
+                                if(MessageDiv){
+                                    MessageDiv.innerHTML = `<div>${resJSON.message}</div>`
+                                }
+                                Pass.value = '';
+                                Email.value = '';
+                                Name.value = '';
                             }
                         }
 

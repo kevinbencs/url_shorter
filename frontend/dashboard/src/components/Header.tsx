@@ -14,6 +14,7 @@ const fetcher = async (url: string): Promise<{  name: string  }> => {
             throw new Error(errorMessage);
         }
 
+        console.log(res)
         return res.json()
 
     } catch (error) {
@@ -26,7 +27,7 @@ const fetcher = async (url: string): Promise<{  name: string  }> => {
 const Header = () => {
     const { setShowSidebar } = useSidebar();
     const [shadow, setShadow] = useState('');
-    const { data, error, isLoading, } = useSWR('api/name', fetcher, { revalidateOnFocus: false })
+    const { data, error, isLoading, } = useSWR<{name: string}, Error>('/api/name', fetcher, { revalidateOnFocus: false })
 
     useEffect(() => {
         function getShadow() {
@@ -62,10 +63,10 @@ const Header = () => {
                     <div className="flex gap-4 items-center">
                         <ThemeToggle />
                         {isLoading && 
-                            <div></div>
+                            <div>...Loading</div>
                         }
                         {error && 
-                            <div>Server error</div>
+                            <div>{error}</div>
                         }
                         {data && 
                             <div> {data.name}</div>

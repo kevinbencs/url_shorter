@@ -9,6 +9,9 @@ const router = Router();
 
 
 //Register route
+router.post('/api/signup', validateData(RegisterSchema), Register)
+
+//Register route
 router.post('/signup', validateData(RegisterSchema), Register)
 
 //Login route

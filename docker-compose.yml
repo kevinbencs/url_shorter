@@ -20,13 +20,12 @@ services:
       - API_PORT=3001
       - FRONTEND_PORT=3003
       - PORT=3000
-      
 
-
+  
   api:
     build: 
       context: ./backend/api
-    command: sh -c " npx wait-on tcp:postgres:5432 && npx prisma migrate dev --name init && npm start"
+    command: "npm run start"
     expose:
       - "3001:3001"
     mem_limit: 1g
@@ -39,6 +38,15 @@ services:
       - PORT=3001
       - SECRET=${SECRET}
       - SECRET_COOKIE=${SECRET_COOKIE}
+
+  migrate:
+    build:
+      context: ./backend/migrate
+    command: sh -c "npx wait-on tcp:postgres:5432 && npx prisma migrate dev --name init"
+    depends_on:
+      - postgres
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
 
 
   pages:
