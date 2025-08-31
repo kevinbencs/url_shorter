@@ -9,9 +9,6 @@ const router = Router();
 
 
 //Register route
-router.post('/api/signup', validateData(RegisterSchema), Register)
-
-//Register route
 router.post('/signup', validateData(RegisterSchema), Register)
 
 //Login route
@@ -32,9 +29,6 @@ router.delete('/link/:id', Verify, DeleteLink)
 //Update link
 router.patch('/link/:id', Verify, validateData(LinkSchema), UpdateLink)
 
-//Delete link
-router.delete('/link/:id', Verify, DeleteLink)
-
 //Delete account
 router.delete('/delete/acc', Verify, DeleteAccount)
 
@@ -42,7 +36,7 @@ router.delete('/delete/acc', Verify, DeleteAccount)
 router.patch('/update/password', Verify, validateData(LinkSchema), UpdatePassword)
 
 //Post search
-router.post('/search/:url', validateData(SearchSchema), GetLinkInformation)
+router.get('/search', GetLinkInformation)
 
 //Get name
 router.get('/name',Verify, GetName)

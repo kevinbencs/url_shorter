@@ -14,7 +14,6 @@ server.use(cookieParser(SECRET_COOKIE))
 
 server.use(urlencoded({ extended: true }));
 server.disable("x-powered-by"); //Reduce fingerprinting
-
 server.use(router)
 
 

@@ -1,22 +1,15 @@
-import { type SyntheticEvent, useState, useEffect, useTransition } from "react"
+import { type SyntheticEvent, useState, useTransition } from "react"
 
 const NewPass = () => {
   const [passMatch, setPassMatch] = useState<boolean>(true);
-  const [pass1, setPass1] = useState<string>('');
-  const [pass2, setPass2] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
   const [err, setErr] = useState<string>('');
   const [isPending, startTransition] = useTransition();
   const [Res, setRes] = useState<string>('');
+  const [show, setShow] = useState<boolean>(false)
+  const [typePas, setTypePass] = useState<string>('password');
 
-  useEffect(() => {
-    if (pass1 !== pass2) {
-      setPassMatch(false);
-    }
-    else {
-      setPassMatch(true);
-    }
-    setErr('')
-  }, [pass1, pass2])
+
 
   const handleSubmit = (e: SyntheticEvent) => {
     e.preventDefault();
@@ -29,20 +22,19 @@ const NewPass = () => {
             "Content-type": "application/json",
             "Access-Control-Allow-Origin": "*",
           },
-          body: JSON.stringify({ pass1, pass2 })
+          body: JSON.stringify({ password })
         });
 
         setPassMatch(false);
 
-        if(!res.ok){
-          const Err = await res.json() as {error: string}
+        if (!res.ok) {
+          const Err = await res.json() as { error: string }
           setErr(Err.error)
         }
-        else{
-          setPass1('');
-          setPass2('');
-          const resJson = await res.json() as {res: string};
-          setRes(resJson.res) 
+        else {
+          setPassword('');
+          const resJson = await res.json() as { res: string };
+          setRes(resJson.res)
         }
 
       } catch (error) {
@@ -52,8 +44,16 @@ const NewPass = () => {
       }
     })
 
+  }
 
-
+  const showPass = () => {
+    if(!show){
+      setTypePass('text')
+    }
+    else{
+      setTypePass('password')
+    }
+    setShow(!show)
   }
 
   return (
@@ -72,15 +72,40 @@ const NewPass = () => {
           <div className="text-green-700 mb-4">{Res}</div>
         }
 
-        <label className="mb-4 ">
+        <label className="mb-4 relative">
           <div className="text-base">New password</div>
-          <input type="password" name="pass1" className="w-full border border-gray-700 rounded-3xl p-1 pl-4 pr-4 mt-2 mb-2" value={pass1} onChange={(e) => setPass1(e.target.value)} disabled={isPending}/>
+          <input type={typePas} name="password" className="w-full border border-gray-700 rounded-3xl p-1 pl-4 pr-4 mt-2 mb-2" value={password} onChange={(e) => setPassword(e.target.value)} disabled={isPending} />
+          <button  className="absolute z-10 right-3 bottom-2" onClick={showPass}>
+            {!show &&
+            <div >
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eye">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+                <path
+                  d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" />
+              </svg>
+            </div>
+            }
+            {show &&
+            <div>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round"
+                className="icon icon-tabler icons-tabler-outline icon-tabler-eye-off">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <path d="M10.585 10.587a2 2 0 0 0 2.829 2.828" />
+                <path
+                  d="M16.681 16.673a8.717 8.717 0 0 1 -4.681 1.327c-3.6 0 -6.6 -2 -9 -6c1.272 -2.12 2.712 -3.678 4.32 -4.674m2.86 -1.146a9.055 9.055 0 0 1 1.82 -.18c3.6 0 6.6 2 9 6c-.666 1.11 -1.379 2.067 -2.138 2.87" />
+                <path d="M3 3l18 18" />
+              </svg>
+            </div>
+            }
+            
+          </button>
         </label>
-        <label>
-          <div className="text-base">Mew password again</div>
-          <input type="password" name="pass2" className="w-full border border-gray-700 rounded-3xl p-1 pl-4 pr-4 mt-2 mb-6" value={pass2} onChange={(e) => setPass2(e.target.value)} disabled={isPending} />
-        </label>
-        <input type="submit" value="Change" className="cursor-pointer text-md w-full border-fuchsia-400 border pt-1 pb-1 rounded-full  hover:bg-fuchsia-400 hover:text-white "  disabled={isPending}/>
+        <input type="submit" value="Change" className="cursor-pointer text-md w-full border-fuchsia-400 border pt-1 pb-1 rounded-full  hover:bg-fuchsia-400 hover:text-white " disabled={isPending} />
       </form>
     </div>
   )

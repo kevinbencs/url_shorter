@@ -10,7 +10,7 @@ const prisma = new PrismaClient();
 //POST request - Sing up
 export async function Register(req: Request, res: Response): Promise<void> {
     try {
-        
+
         const body = req.body as { email: string, password: string, name: string }
 
         const hashedPassword = await bcrypt.hash(body.password, 10);
@@ -43,14 +43,14 @@ export async function LogIn(req: Request, res: Response): Promise<void> {
         console.log(user);
         console.log(2)
         if (!user) return void res.status(401).json({ error: 'Invalid email or password. Please try again with the correct credentials' })
-            console.log(3)
+        console.log(3)
         const isPasswordValid = await bcrypt.compare(
             `${body.password}`,
             user.password
         );
 
         if (!isPasswordValid) return void res.status(401).json({ error: 'Invalid email or password. Please try again with the correct credentials' })
-            console.log(4)
+        console.log(4)
         let options = {
             signed: true,
             httpOnly: true, // The cookie is only accessible by the web server
@@ -58,7 +58,7 @@ export async function LogIn(req: Request, res: Response): Promise<void> {
             sameSite: 'lax'
         };
 
-        const token = jwt.sign({ id: user.id }, SECRET, { expiresIn: "1h" } );
+        const token = jwt.sign({ id: user.id }, SECRET, { expiresIn: "1h" });
 
         const Tok = await prisma.token.create({
             data: {
@@ -128,7 +128,7 @@ export async function GetLinks(req: Request, res: Response): Promise<void> {
 export async function AddLinks(req: Request, res: Response): Promise<void> {
     try {
         const email = req.user.email;
-        const body =  req.body;
+        const body = req.body;
 
         const length = 6;
         let result = '';
@@ -160,7 +160,27 @@ export async function AddLinks(req: Request, res: Response): Promise<void> {
 //POST request - Get link information
 export async function GetLinkInformation(req: Request, res: Response): Promise<void> {
     try {
-        const param = req.param;
+        const param = req.query.url;
+
+        const urlParts = param.split('/');
+
+        if (urlParts.length !== 1) {
+            if (urlParts.length === 5) {
+                const information = await prisma.url.findUnique({
+                    where: {
+                        new_url: urlParts[4],
+                    }
+                })
+
+                if (information) {
+                    return void res.status(200).json({ message: information.real_url })
+                }
+                return void res.status(404).json({ message: 'This url is not available.' })
+            }
+            else {
+                return void res.status(404).json({ message: 'This url is not available.' })
+            }
+        }
 
         const information = await prisma.url.findUnique({
             where: {
@@ -168,10 +188,10 @@ export async function GetLinkInformation(req: Request, res: Response): Promise<v
             }
         })
 
-        if (information.private) {
-            return void res.status(200).json({ message: 'Private url' })
+        if (information) {
+            return void res.status(200).json({ message: information.real_url })
         }
-        return void res.status(200).json({ message: information.real_url })
+        return void res.status(404).json({ message: 'This url is not available.' })
     } catch (error) {
         console.log(error)
         return void res.status(500).json({ error: 'Internal server error.' })
@@ -182,15 +202,13 @@ export async function GetLinkInformation(req: Request, res: Response): Promise<v
 //DELETE request - Delete link
 export async function DeleteLink(req: Request, res: Response): Promise<void> {
     try {
-        const email = req.user.email;
-        const id = await req.params;
+        const id = await req.params.id;
 
         const del = await prisma.url.delete({
             where: {
                 id
             }
         })
-
 
 
         return void res.status(200).json({ message: 'Link deleted' })
@@ -204,9 +222,7 @@ export async function DeleteLink(req: Request, res: Response): Promise<void> {
 //PATCH request - Update link
 export async function UpdateLink(req: Request, res: Response): Promise<void> {
     try {
-
-        const email = req.user.email;
-        const id = await req.params;
+        const id = req.params.id;
         const body = req.body
 
         const up = await prisma.url.update({
@@ -236,13 +252,6 @@ export async function UpdateLink(req: Request, res: Response): Promise<void> {
 export async function DeleteAccount(req: Request, res: Response): Promise<void> {
     try {
         const user = req.user;
-        const token = req.token;
-
-        const not_own = await prisma.anotherurl.delete({
-            where: {
-                email: user.email
-            }
-        })
 
         const url = await prisma.url.delete({
             where: {
@@ -279,7 +288,7 @@ export async function UpdatePassword(req: Request, res: Response): Promise<void>
     try {
         const email = req.user.email;
         const body = req.body;
-        const del = await prisma.user.update({
+        const res = await prisma.user.update({
             where: {
                 email
             },
@@ -299,7 +308,7 @@ export async function GetName(req: Request, res: Response): Promise<void> {
     try {
         const name = req.user.name
 
-        return void res.status(200).json({name});
+        return void res.status(200).json({ name });
 
     } catch (error) {
         console.log(error);

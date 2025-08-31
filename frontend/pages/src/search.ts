@@ -13,7 +13,7 @@
             `
             }
             else {
-                if (res.code !== 404) console.error(res.error)
+                if (res.error) console.error(res.error)
             }
         })
         .catch(err => {
@@ -30,24 +30,29 @@
 
     const urlParams = new URLSearchParams(window.location.search)
 
-    fetch(`/api/search/${urlParams.get('url')}`)
-        .then(data => data.json())
-        .then(res => {
-            if (result) {
-                if (res.ok) {
-                    result.innerHTML = `
+    if (urlParams && urlParams.get('url')) {
+        fetch(`/api/search?url=${urlParams.get('url')}`)
+            .then(data => data.json())
+            .then(res => {
+                if (result) {
+                    if (res.message) {
+                        result.innerHTML = `
                 ${res.message}
             `
-                }
-                else {
-                    result.innerHTML = `
+                    }
+                    else {
+                        if (res.error)
+                            result.innerHTML = `
                 ${res.error}
             `
+                    }
                 }
-            }
-        })
-        .catch(err => {
-            console.error(err);
-        })
+            })
+            .catch(err => {
+                console.error(err);
+            })
+    }
+
+
 
 })()

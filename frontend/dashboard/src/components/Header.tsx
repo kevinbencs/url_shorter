@@ -27,7 +27,7 @@ const fetcher = async (url: string): Promise<{  name: string  }> => {
 const Header = () => {
     const { setShowSidebar } = useSidebar();
     const [shadow, setShadow] = useState('');
-    const { data, error, isLoading, } = useSWR<{name: string}, Error>('/api/name', fetcher, { revalidateOnFocus: false })
+    const { data, error, isLoading, } = useSWR('/api/name', fetcher, { revalidateOnFocus: false })
 
     useEffect(() => {
         function getShadow() {
