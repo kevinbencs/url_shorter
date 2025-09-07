@@ -43,13 +43,21 @@ export async function UrlRedirect(req: Request, res: Response): Promise<void> {
             return void res.status(302).redirect(`/?info=no_url`);
         }
 
+        console.log(referer)
+        console.log(ip)
+        console.log(userAgent)
+        console.log(language)
+        console.log(accept)
+        console.log(target)
+
+
         if (token) {
             const red = await prisma.click.create({
                 data: {
                     new_url: target,
                     ip,
                     user_agent: userAgent,
-                    referer,
+                    referer: referer || '',
                     language,
                     accept,
                     token
@@ -62,7 +70,7 @@ export async function UrlRedirect(req: Request, res: Response): Promise<void> {
                     new_url: target,
                     ip,
                     user_agent: userAgent,
-                    referer,
+                    referer: referer || '',
                     language,
                     accept,
                 }
