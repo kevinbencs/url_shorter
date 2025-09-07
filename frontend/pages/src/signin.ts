@@ -11,12 +11,11 @@
     let passType = 'password';
 
     PassChanger?.addEventListener('click', async (e) => {
-        e.preventDefault();
         if (passType === 'password') {
             passType = 'text';
             Display[0]?.classList.add('hidden');
             Hide[0]?.classList.remove('hidden');
-            
+
         }
         else {
             passType = 'password';
@@ -24,7 +23,7 @@
             Display[0]?.classList.remove('hidden');
         }
 
-        if(Pass) {
+        if (Pass) {
             Pass.type = passType;
         }
     })
@@ -35,7 +34,7 @@
         try {
             e.preventDefault();
 
-            if (Pass && Email && Pass.value !== '' && Email.value !== '') {
+            if   (Pass && Email && Pass.value !== '' && Email.value !== '') {
                 if (canSubmit) {
 
                     canSubmit = false;
@@ -51,25 +50,27 @@
 
 
 
-                    if (res.status < 300 || res.status >= 400) {
-                        const resJSON = await res.json();
+                    const resJSON = await res.json();
 
+                    if(resJSON.redirect){
+                        window.location.href = resJSON.redirect;
+                    }
 
-                        if (resJSON.error) {
-                            console.log(resJSON.error)
-                            if (ErrorDiv) {
-                                ErrorDiv.innerHTML = `
+                    if (resJSON.error) {
+                        console.log(resJSON.error)
+                        if (ErrorDiv) {
+                            ErrorDiv.innerHTML = `
                                     <div>${resJSON.error}</div>
                                 `
-                            }
-                        }
-                        if (resJSON.failed && resJSON.failed.length > 0) {
-                            console.log(resJSON.failed)
-                            if (ErrorDiv) {
-                                ErrorDiv.innerHTML = `${resJSON.failed.map((item: {message: string}) => `<div>${item.message}</div>`).join('')}`
-                            }
                         }
                     }
+                    if (resJSON.failed && resJSON.failed.length > 0) {
+                        console.log(resJSON.failed)
+                        if (ErrorDiv) {
+                            ErrorDiv.innerHTML = `${resJSON.failed.map((item: { message: string }) => `<div>${item.message}</div>`).join('')}`
+                        }
+                    }
+
 
                     canSubmit = true;
                 }
@@ -79,7 +80,7 @@
         } catch (error) {
             console.log(error);
             if (ErrorDiv) {
-                 ErrorDiv.innerHTML = `Something went wrong with network connect. Please try again.`
+                ErrorDiv.innerHTML = `Something went wrong with network connect. Please try again.`
             }
             canSubmit = true;
         }

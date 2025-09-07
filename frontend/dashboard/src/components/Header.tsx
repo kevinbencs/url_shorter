@@ -14,7 +14,6 @@ const fetcher = async (url: string): Promise<{  name: string  }> => {
             throw new Error(errorMessage);
         }
 
-        console.log(res)
         return res.json()
 
     } catch (error) {

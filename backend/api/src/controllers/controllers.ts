@@ -7,6 +7,24 @@ import { SECRET } from '../config/config';
 const { Request, Response } = pkg
 const prisma = new PrismaClient();
 
+interface graphData {
+    month: string,
+    year: string,
+    viewer: number,
+}
+
+interface linkDescription {
+    real_url: string,
+    id: string,
+    new_url: string,
+    viewer: number,
+    once: boolean,
+    time: number,
+    email: string,
+    data: graphData[]
+}
+
+
 //POST request - Sing up
 export async function Register(req: Request, res: Response): Promise<void> {
     try {
@@ -39,21 +57,16 @@ export async function LogIn(req: Request, res: Response): Promise<void> {
                 email: body.email,
             }
         })
-        console.log(body);
-        console.log(user);
-        console.log(2)
         if (!user) return void res.status(401).json({ error: 'Invalid email or password. Please try again with the correct credentials' })
-        console.log(3)
         const isPasswordValid = await bcrypt.compare(
             `${body.password}`,
             user.password
         );
 
         if (!isPasswordValid) return void res.status(401).json({ error: 'Invalid email or password. Please try again with the correct credentials' })
-        console.log(4)
         let options = {
             signed: true,
-            httpOnly: true, // The cookie is only accessible by the web server
+            httpOnly: true,
             secure: true,
             sameSite: 'lax'
         };
@@ -68,7 +81,7 @@ export async function LogIn(req: Request, res: Response): Promise<void> {
 
         res.cookie("user", token, options);
 
-        return void res.status(302).redirect('/dashboard')
+        return void res.status(200).json({ redirect: '/dashboard' })
     } catch (error) {
         console.log(error)
         return void res.status(500).json({ error: 'Internal server error.' })
@@ -101,7 +114,7 @@ export async function LogOut(req: Request, res: Response): Promise<void> {
                 sameSite: 'lax'
             }
         );
-        return void res.status(302).redirect('/')
+        return void res.status(200).json({ redirect: '/' })
     } catch (error) {
         console.log(error)
         return void res.status(500).json({ error: 'Internal server error.' })
@@ -112,12 +125,57 @@ export async function LogOut(req: Request, res: Response): Promise<void> {
 export async function GetLinks(req: Request, res: Response): Promise<void> {
     try {
         const email = req.user.email
-        const urls = await prisma.Url.findMany({
+        const urls = await prisma.url.findMany({
             where: {
                 email
             }
         })
-        return void res.status(200).json({ res: urls })
+
+
+
+        if (urls) {
+            const links: linkDescription[] = [];
+            let viewerArray: graphData[] = []
+
+            for (let i of urls) {
+                const data = await prisma.$queryRaw`
+                    SELECT "new_url" as url,
+                    EXTRACT(YEAR FROM "createdAt")::int AS year,
+                    EXTRACT(MONTH FROM "createdAt")::int AS month,
+                    COUNT(*) as viewer
+                    FROM "Click"
+                    WHERE new_url = ${i.new_url} AND
+                    "createdAt" > NOW() - interval '6 months' 
+                    GROUP BY url, year, month
+                    ORDER BY year, month;
+
+                `
+
+                viewerArray.push({
+                    month: data.month,
+                    year: data.year,
+                    viewer: data.viewer
+                })
+
+
+                links.push({
+                    real_url: i.real_url,
+                    id: i.id,
+                    new_url: i.new_url,
+                    viewer: i.viewer,
+                    once: i.once,
+                    time: i.time,
+                    email: email,
+                    data: viewerArray
+                })
+                viewerArray = [];
+            }
+
+
+            return void res.status(200).json({ res: links })
+        }
+
+        return void res.status(200).json({ res: [] })
     } catch (error) {
         console.log(error)
         return void res.status(500).json({ error: 'Internal server error.' })
@@ -144,8 +202,8 @@ export async function AddLinks(req: Request, res: Response): Promise<void> {
             data: {
                 email,
                 new_url: result,
-                real_url: body.real_url,
-                time: body.time,
+                real_url: body.url,
+                time: body.min,
                 once: body.once
             }
         })

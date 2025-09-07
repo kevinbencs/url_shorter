@@ -38,17 +38,29 @@ export const options = {
   },
 };
 
-const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
+interface graphData{
+    month: string,
+    year: string,
+    viewer: number
+}
 
-export
+//const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
 
-  const Graph = (props: { data: number[] }) => {
+export const Graph = (props: { data: graphData[] }) => {
+    const lab: string[] = [];
+    const value: number[] = [];
+
+    for(let i of props.data){
+      lab.push(i.month);
+      value.push(i.viewer)
+    }
+
     const data = {
-      labels,
+        lab,
       datasets: [
         {
           label: 'Dataset 1',
-          data: props.data,
+          data: value,
           borderColor: 'rgb(255, 99, 132)',
           backgroundColor: 'rgba(255, 99, 132, 0.5)',
           tension: 0.1

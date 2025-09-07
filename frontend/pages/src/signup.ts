@@ -13,7 +13,6 @@
     let passType = 'password';
 
     PassChanger?.addEventListener('click', async (e) => {
-        e.preventDefault();
         if (passType === 'password') {
             passType = 'text';
             Display[0]?.classList.add('hidden');
@@ -37,6 +36,10 @@
     Form?.addEventListener('submit', async (e) => {
         try {
             e.preventDefault();
+            if(ErrorDiv) ErrorDiv.innerHTML = ``;
+            if(MessageDiv) MessageDiv.innerHTML = ``;
+
+
             if (Pass !== null && Email !== null && Name !== null) {
 
                 if (Pass.value !== '' && Email.value !== '' && Name.value !== '') {

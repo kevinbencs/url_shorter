@@ -30,6 +30,23 @@ const Sidebar = () => {
         setDellAcc(true);
     }
 
+    const logOut = async () => {
+        try {
+            const res = await fetch('/api/logout')
+            const resJson = await res.json();
+            if(res.status >= 400){
+                console.log(resJson);
+            }
+            else{
+                if(resJson.redirect){
+                    window.location.href = resJson.redirect;
+                }
+            }
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
     return (
         <div className={`w-60 fixed ${showSidebar} top-0 z-20 p-5 flex flex-col justify-between  h-screen  duration-500 ease-in-out shadow-md lg:left-0  dark:bg-[#424242]  dark:text-[#e2e2e2] bg-gray-100 `}>
 
@@ -61,7 +78,7 @@ const Sidebar = () => {
 
 
 
-            <button className="cursor-pointer flex gap-2 items-center hover:pl-4 p-3 pl-1 duration-200 w-44" > <ImExit /> <span>Log out</span></button>
+            <button className="cursor-pointer flex gap-2 items-center hover:pl-4 p-3 pl-1 duration-200 w-44" onClick={logOut}> <ImExit /> <span>Log out</span></button>
         </div>
     )
 }

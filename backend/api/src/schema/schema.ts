@@ -31,7 +31,9 @@ export const SingInSchema = z.object({
 
 export const LinkSchema = z.object({
     url: z.string().url({message: 'Url is required'}),
-    eligibility: z.array(z.string())
+    newUrl: z.string(),
+    once: z.boolean(),
+    min: z.number().int({message: "Minute must be number"}).min(0, {message: 'Minute must be between 0 and 7200'}).max(7200, {message: 'Minute must be between 0 and 7200'} ),
 })
 
 export const NewPassSchema = z.object({
