@@ -4,17 +4,16 @@ import UrlOfMyUrls from './UrlOfMyUrls';
 
 import useSWR from 'swr'
 
-interface graphData{
-    month: string,
-    year: string,
+interface graphData {
+    date: string,
     viewer: number
 }
 
-interface linkDescription{
+interface linkDescription {
     real_url: string,
     id: string,
     new_url: string,
-    viewer: number, 
+    viewer: number,
     once: boolean,
     time: number,
     email: string,
@@ -26,7 +25,7 @@ const fetcher = async (url: string): Promise<{ res: linkDescription[] | [] }> =>
         const res = await fetch(url);
 
         if (!res.ok) {
-            const errorMessage: string = await res.json().then((data: {error: string}) => data.error || "unknown error");
+            const errorMessage: string = await res.json().then((data: { error: string }) => data.error || "unknown error");
             console.error(errorMessage)
 
             throw new Error(errorMessage);
@@ -61,7 +60,6 @@ const MyUrl = () => {
                         "Accept": "application/json, text/plain",
                         "Content-type": "application/json",
                         "Access-Control-Allow-Origin": "*",
-
                     },
                     body: JSON.stringify({ min: Number(min), once, url, newUrl })
                 })
@@ -76,12 +74,16 @@ const MyUrl = () => {
 
                     if (error.failed) {
                         console.error(error.failed)
-                        setErr(error.failed.map((item: {message: string}) => item.message).join(' '))
+                        setErr(error.failed.map((item: { message: string }) => item.message).join(' '))
                     }
 
                 }
-                else{
-                   mutate() 
+                else {
+                    setMin('');
+                    setNewUrl('')
+                    setOnce(false);
+                    setUrl('');
+                    mutate()
                 }
 
             } catch (error) {
@@ -135,9 +137,9 @@ const MyUrl = () => {
                         {isLoading && <div>
                             <svg className="mr-3 size-5 animate-spin " viewBox="0 0 24 24"> </svg>
                             Loading...
-                            </div> }
-                        {error && <div className='text-red-700'>{error.message}</div> }
-                        {(data && data.res) && data.res.map((item: linkDescription) => <UrlOfMyUrls  id={item.id} data={item.data} new_url={item.new_url} key={item.id} viewer={item.viewer} real_url={item.real_url} once={item.once} time={item.time}/>)}
+                        </div>}
+                        {error && <div className='text-red-700'>{error.message}</div>}
+                        {(data && data.res) && data.res.map((item: linkDescription) => <UrlOfMyUrls id={item.id} data={item.data} new_url={item.new_url} key={item.id} viewer={item.viewer} real_url={item.real_url} once={item.once} time={item.time} dataArray={data.res} mutate={mutate} />)}
 
                     </ul>
                 </section>

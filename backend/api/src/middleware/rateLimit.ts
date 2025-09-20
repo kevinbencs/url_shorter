@@ -1,7 +1,11 @@
-import rateLimit from "express-rate-limit";
+import { RateLimiterMemory } from "rate-limiter-flexible"
 
-export const loginLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 5,
-  message: "Too many attempts. Please try again later (15 min)."
+export const emailLimiter = new RateLimiterMemory({
+  points: 5,
+  duration: 600,
+});
+
+export const ipLimiter = new RateLimiterMemory({
+  points: 50,
+  duration: 600,
 });

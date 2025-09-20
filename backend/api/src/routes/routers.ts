@@ -1,9 +1,8 @@
 import { Router } from "express";
 import { AddLinks, DeleteAccount, DeleteLink, GetLinkInformation, GetLinks, GetName, LogIn, LogOut, Register, UpdateLink, UpdatePassword, } from "../controllers/controllers.ts";
 import { validateData } from "../middleware/validate.ts";
-import { LinkSchema, NewPassSchema, RegisterSchema, SingInSchema } from "../schema/schema.ts";
+import { LinkSchema, NewPassSchema, RegisterSchema, SingInSchema, UpdateLinkSchema } from "../schema/schema.ts";
 import { Verify } from "../middleware/verify.ts";
-import { loginLimiter } from "../middleware/rateLimit.ts";
 
 const router = Router();
 
@@ -12,7 +11,7 @@ const router = Router();
 router.post('/signup', validateData(RegisterSchema), Register)
 
 //Login route
-router.post('/signin', loginLimiter, validateData(SingInSchema), LogIn)
+router.post('/signin', validateData(SingInSchema), LogIn)
 
 //Logout route
 router.get('/logout', LogOut)
@@ -27,7 +26,7 @@ router.post('/links', Verify, validateData(LinkSchema), AddLinks)
 router.delete('/link/:id', Verify, DeleteLink)
 
 //Update link
-router.patch('/link/:id', Verify, validateData(LinkSchema), UpdateLink)
+router.patch('/link/:id', Verify, validateData(UpdateLinkSchema), UpdateLink)
 
 //Delete account
 router.delete('/delete/acc', Verify, DeleteAccount)

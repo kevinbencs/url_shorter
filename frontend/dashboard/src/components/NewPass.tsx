@@ -1,7 +1,6 @@
 import { type SyntheticEvent, useState, useTransition } from "react"
 
 const NewPass = () => {
-  const [passMatch, setPassMatch] = useState<boolean>(true);
   const [password, setPassword] = useState<string>('');
   const [err, setErr] = useState<string>('');
   const [isPending, startTransition] = useTransition();
@@ -13,6 +12,8 @@ const NewPass = () => {
 
   const handleSubmit = (e: SyntheticEvent) => {
     e.preventDefault();
+    setRes('')
+    setErr('')
     startTransition(async () => {
       try {
         const res = await fetch('/api/update/password', {
@@ -25,20 +26,19 @@ const NewPass = () => {
           body: JSON.stringify({ password })
         });
 
-        setPassMatch(false);
 
         if (!res.ok) {
-          const Err = await res.json() as { error: string }
-          setErr(Err.error)
+          const Err = await res.json()
+          if(Err.error) setErr(Err.error)
+          if(Err.failed) setErr(Err.failed.map((item: {message: string}) => item.message).join(' '))
         }
         else {
           setPassword('');
-          const resJson = await res.json() as { res: string };
-          setRes(resJson.res)
+          const resJson = await res.json() as { message: string };
+          setRes(resJson.message)
         }
 
       } catch (error) {
-        setPassMatch(false);
         console.error(error)
         setErr('Something went wrong, please try again.')
       }
@@ -59,11 +59,8 @@ const NewPass = () => {
   return (
     <div className="flex justify-center">
       <form action="" onSubmit={handleSubmit} className="flex flex-col max-w-[800px] w-full">
-        <h2 className={`text-2xl ${(passMatch === true && err === '') ? 'mb-8' : 'mb-4'}`}>Change password</h2>
-        {passMatch === false && <div className="text-red-700 mb-4">
-          The passwords do not match
-        </div>
-        }
+        <h2 className={`text-2xl ${(Res === '' && err === '') ? 'mb-8' : 'mb-4'}`}>Change password</h2>
+        
         {err !== '' &&
           <div className="text-red-700 mb-4">{err}</div>
         }
@@ -75,7 +72,7 @@ const NewPass = () => {
         <label className="mb-4 relative">
           <div className="text-base">New password</div>
           <input type={typePas} name="password" className="w-full border border-gray-700 rounded-3xl p-1 pl-4 pr-4 mt-2 mb-2" value={password} onChange={(e) => setPassword(e.target.value)} disabled={isPending} />
-          <button  className="absolute z-10 right-3 bottom-2" onClick={showPass}>
+          <button  className="absolute z-10 right-3 bottom-3" onClick={showPass} type='button'>
             {!show &&
             <div >
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"

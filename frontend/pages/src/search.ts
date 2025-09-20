@@ -7,9 +7,9 @@
     fetch('/api/name')
         .then(data => data.json())
         .then(res => {
-            if (res.ok && hedSec[0]) {
+            if (res.name && hedSec[0]) {
                 hedSec[0].innerHTML = `
-                <a href="/dashboard" class="m-1 ml-2 pl-2">${res.name}</a>
+                <a href="/dashboard" class="m-1 ml-2 pl-2 pr-2">${res.name}</a>
             `
             }
             else {

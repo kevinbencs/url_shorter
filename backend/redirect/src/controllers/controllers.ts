@@ -37,18 +37,10 @@ export async function UrlRedirect(req: Request, res: Response): Promise<void> {
         })
 
         const now = Number(new Date());
-        console.log(url);
-
-        if (!url || (url.once && url.viewer > 0) || (url.time > 0 && (now - Number(url.createdAt)) > url.time)) {
+        
+        if (!url || (url.once && url.viewer > 0) || (url.time > 0 && (now - Number(url.createdAt))/1000/6 > url.time)) {
             return void res.status(302).redirect(`/?info=no_url`);
         }
-
-        console.log(referer)
-        console.log(ip)
-        console.log(userAgent)
-        console.log(language)
-        console.log(accept)
-        console.log(target)
 
 
         if (token) {

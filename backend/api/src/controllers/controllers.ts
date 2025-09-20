@@ -3,13 +3,13 @@ import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken'
 import { SECRET } from '../config/config';
+import { emailLimiter, ipLimiter } from '../middleware/rateLimit';
 
 const { Request, Response } = pkg
 const prisma = new PrismaClient();
 
 interface graphData {
-    month: string,
-    year: string,
+    date: string,
     viewer: number,
 }
 
@@ -23,6 +23,7 @@ interface linkDescription {
     email: string,
     data: graphData[]
 }
+
 
 
 //POST request - Sing up
@@ -50,7 +51,19 @@ export async function Register(req: Request, res: Response): Promise<void> {
 //POST request - Sing in
 export async function LogIn(req: Request, res: Response): Promise<void> {
     try {
-        const body = req.body as { email: string, password: string }
+
+        const body = req.body as { email: string, password: string };
+        const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+
+        try {
+            await Promise.all([
+                emailLimiter.consume(body.email),
+                ipLimiter.consume(ip)
+            ])
+
+        } catch (error) {
+            return void res.status(429).json({ error: 'Too many login attempts' });
+        }
 
         const user = await prisma.user.findUnique({
             where: {
@@ -79,9 +92,15 @@ export async function LogIn(req: Request, res: Response): Promise<void> {
             }
         })
 
+        await emailLimiter.delete(body.email)
+
         res.cookie("user", token, options);
 
         return void res.status(200).json({ redirect: '/dashboard' })
+
+
+
+
     } catch (error) {
         console.log(error)
         return void res.status(500).json({ error: 'Internal server error.' })
@@ -131,31 +150,29 @@ export async function GetLinks(req: Request, res: Response): Promise<void> {
             }
         })
 
-
-
         if (urls) {
             const links: linkDescription[] = [];
-            let viewerArray: graphData[] = []
 
             for (let i of urls) {
+
                 const data = await prisma.$queryRaw`
-                    SELECT "new_url" as url,
-                    EXTRACT(YEAR FROM "createdAt")::int AS year,
-                    EXTRACT(MONTH FROM "createdAt")::int AS month,
-                    COUNT(*) as viewer
-                    FROM "Click"
-                    WHERE new_url = ${i.new_url} AND
-                    "createdAt" > NOW() - interval '6 months' 
-                    GROUP BY url, year, month
-                    ORDER BY year, month;
-
+                WITH dates AS (
+                    SELECT generate_series(
+                        (NOW() - interval '3 months')::date,
+                        NOW()::date,
+                        interval '1 day'
+                    )::date AS day
+                )
+                SELECT 
+                    to_char(d.day, 'YYYY/MM/DD') AS date,
+                    COUNT(c.*)::int AS viewer
+                FROM dates d
+                LEFT JOIN "Click" c
+                    ON c."createdAt"::date = d.day
+                    AND c.new_url = ${i.new_url}
+                GROUP BY d.day
+                ORDER BY d.day;
                 `
-
-                viewerArray.push({
-                    month: data.month,
-                    year: data.year,
-                    viewer: data.viewer
-                })
 
 
                 links.push({
@@ -166,9 +183,8 @@ export async function GetLinks(req: Request, res: Response): Promise<void> {
                     once: i.once,
                     time: i.time,
                     email: email,
-                    data: viewerArray
+                    data: [...data]
                 })
-                viewerArray = [];
             }
 
 
@@ -188,25 +204,51 @@ export async function AddLinks(req: Request, res: Response): Promise<void> {
         const email = req.user.email;
         const body = req.body;
 
-        const length = 6;
-        let result = '';
-        const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
-        const charactersLength = characters.length;
-        for (let i = 0; i < length; i++) {
-            result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        if (body.newUrl === '') {
+            const length = 6;
+            let result = '';
+            const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+            const charactersLength = characters.length;
+            for (let i = 0; i < length; i++) {
+                result += characters.charAt(Math.floor(Math.random() * charactersLength));
+            }
+
+
+
+            const link = await prisma.url.create({
+                data: {
+                    email,
+                    new_url: result,
+                    real_url: body.url,
+                    time: body.min,
+                    once: body.once
+                }
+            })
+        }
+        else {
+            const link = await prisma.url.findUnique({
+                where: {
+                    new_url: body.newUrl
+                }
+
+            })
+
+            if (link) {
+                return void res.status(400).json({ error: `${body.newUrl} is used. Please select another url parameter or leave the input field blank.` })
+            }
+
+
+            const link2 = await prisma.url.create({
+                data: {
+                    email,
+                    new_url: body.newUrl,
+                    real_url: body.url,
+                    time: body.min,
+                    once: body.once
+                }
+            })
         }
 
-
-
-        const link = await prisma.url.create({
-            data: {
-                email,
-                new_url: result,
-                real_url: body.url,
-                time: body.min,
-                once: body.once
-            }
-        })
         return void res.status(200).json({ message: 'Link added' })
     } catch (error) {
         console.log(error)
@@ -283,18 +325,31 @@ export async function UpdateLink(req: Request, res: Response): Promise<void> {
         const id = req.params.id;
         const body = req.body
 
-        const up = await prisma.url.update({
-            where: {
-                id
-            },
-            data: {
-                new_url: body.new_url,
-                real_url: body.real_url,
-                private: body.private,
-                time: body.time,
-                once: body.once
-            }
-        })
+        if (body.url !== "") {
+            const up = await prisma.url.update({
+                where: {
+                    id
+                },
+                data: {
+                    new_url: body.url,
+                    time: body.min,
+                    once: body.once
+                }
+            })
+        }
+        else {
+            const up = await prisma.url.update({
+                where: {
+                    id
+                },
+                data: {
+                    time: body.min,
+                    once: body.once
+                }
+            })
+        }
+
+
 
         return void res.status(200).json({ message: 'Link updated' })
     } catch (error) {
@@ -346,12 +401,13 @@ export async function UpdatePassword(req: Request, res: Response): Promise<void>
     try {
         const email = req.user.email;
         const body = req.body;
-        const res = await prisma.user.update({
+        const hashedPassword = await bcrypt.hash(body.password, 10);
+        const res2 = await prisma.user.update({
             where: {
                 email
             },
             data: {
-                password: body.password,
+                password: hashedPassword,
             }
         })
         return void res.status(200).json({ message: 'Password changed' })
