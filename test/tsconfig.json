@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "target": "ESNext",
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "types": ["node", "jest"],
+    "skipLibCheck": true
+  },
+  "include": ["src", "**/*.test.ts"]
+}

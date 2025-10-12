@@ -34,7 +34,7 @@ router.delete('/delete/acc', Verify, DeleteAccount)
 //Update password
 router.patch('/update/password', Verify, validateData(NewPassSchema), UpdatePassword)
 
-//Post search
+//Get search
 router.get('/search', GetLinkInformation)
 
 //Get name

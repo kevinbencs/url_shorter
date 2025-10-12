@@ -49,12 +49,13 @@
                     })
 
 
+                    if(res.status === 302){
+                        window.location.href = res.headers.get('location') || '/dashboard';
+                    }
 
                     const resJSON = await res.json();
 
-                    if(resJSON.redirect){
-                        window.location.href = resJSON.redirect;
-                    }
+                    
 
                     if (resJSON.error) {
                         console.log(resJSON.error)

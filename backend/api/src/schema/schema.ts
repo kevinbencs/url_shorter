@@ -30,10 +30,10 @@ export const SingInSchema = z.object({
 
 
 export const LinkSchema = z.object({
-    url: z.string().url({message: 'Url is required'}),
-    newUrl: z.string(),
-    once: z.boolean(),
-    min: z.number().int({message: "Minute must be number"}).min(0, {message: 'Minute must be between 0 and 7200'}).max(7200, {message: 'Minute must be between 0 and 7200'} ),
+    url: z.string({message: 'Url is required'}).url({message: 'Url is required'}),
+    newUrl: z.union([z.string(), z.undefined()],{errorMap: () => ({message: 'New url tag must be string or undefined'})}),
+    once: z.boolean({message: 'Once must be boolean'}),
+    min: z.number({message: "Minute must be number"}).int({message: "Minute must be integer"}).min(0, {message: 'Minute must be between 0 and 7200'}).max(7200, {message: 'Minute must be between 0 and 7200'} ),
 })
 
 

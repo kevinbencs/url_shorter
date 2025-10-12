@@ -33,14 +33,13 @@ const Sidebar = () => {
     const logOut = async () => {
         try {
             const res = await fetch('/api/logout')
+            if(res.status === 302){
+                window.location.href = res.headers.get('location') || '/';
+            }
+
             const resJson = await res.json();
             if(res.status >= 400){
                 console.log(resJson);
-            }
-            else{
-                if(resJson.redirect){
-                    window.location.href = resJson.redirect;
-                }
             }
         } catch (error) {
             console.error(error)

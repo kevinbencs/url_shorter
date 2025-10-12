@@ -57,3 +57,25 @@ export async function GetSearchPage (req: Request, res: Response): Promise<void>
 }
 
 
+//GET request - Get 404
+export async function GetNoRoute(req: Request, res: Response): Promise<void> {
+    try {
+        return void res.status(200).sendFile(path.join(process.cwd(),'/frontend/pages/dist/404.html'))
+    } catch (error) {
+        console.log(error)
+        return void res.status(500).json({error: 'Internal server error.'})
+    }
+}
+
+
+
+//GET request - Get 404
+export async function NoRoute(req: Request, res: Response): Promise<void> {
+    try {
+        return void res.status(200).json({code: 404, message: 'route not found'})
+    } catch (error) {
+        console.log(error)
+        return void res.status(500).json({error: 'Internal server error.'})
+    }
+}
+

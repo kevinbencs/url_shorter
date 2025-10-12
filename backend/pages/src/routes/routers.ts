@@ -1,5 +1,5 @@
 import {Router} from "express";
-import { GetDashboardPage, GetHomePage,  GetSearchPage, GetSigUpPage, GetSignInPage } from "../controllers/controllers.ts";
+import { GetDashboardPage, GetHomePage,  GetNoRoute,  GetSearchPage, GetSigUpPage, GetSignInPage, NoRoute } from "../controllers/controllers.ts";
 import { authenticateToken } from "../middleware/authDashboard.ts";
 import { redDash } from "../middleware/redirectDashboard.ts";
 
@@ -23,6 +23,12 @@ router.get(/^\/dashboard(\/.*)?$/,authenticateToken,GetDashboardPage)
 
 //Get Search page
 router.get('/search',GetSearchPage)
+
+//Get 404
+router.get(/.*/,GetNoRoute)
+
+//404 route
+router.use(NoRoute)
 
 
 

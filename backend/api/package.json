@@ -23,6 +23,7 @@
     "jsonwebtoken": "^9.0.2",
     "rate-limiter-flexible": "^7.3.1",
     "tailwindcss": "^4.1.7",
+    "uuid": "^13.0.0",
     "zod": "^3.24.4"
   },
   "devDependencies": {

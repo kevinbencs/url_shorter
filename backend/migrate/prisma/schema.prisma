@@ -49,6 +49,7 @@ model Click {
 }
 
 model Token {
+  email String
   id String @id @default(uuid()) @db.Uuid
   token String @unique
   use Boolean @default(true)

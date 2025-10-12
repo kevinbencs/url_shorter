@@ -4,6 +4,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken'
 import { SECRET } from '../config/config';
 import { emailLimiter, ipLimiter } from '../middleware/rateLimit';
+import { validate as isUuid } from 'uuid'
 
 const { Request, Response } = pkg
 const prisma = new PrismaClient();
@@ -89,6 +90,7 @@ export async function LogIn(req: Request, res: Response): Promise<void> {
         const Tok = await prisma.token.create({
             data: {
                 token,
+                email: body.email
             }
         })
 
@@ -96,7 +98,7 @@ export async function LogIn(req: Request, res: Response): Promise<void> {
 
         res.cookie("user", token, options);
 
-        return void res.status(200).json({ redirect: '/dashboard' })
+        return void res.status(302).redirect('/dashboard')
 
 
 
@@ -133,7 +135,7 @@ export async function LogOut(req: Request, res: Response): Promise<void> {
                 sameSite: 'lax'
             }
         );
-        return void res.status(200).json({ redirect: '/' })
+        return void res.status(302).redirect('/')
     } catch (error) {
         console.log(error)
         return void res.status(500).json({ error: 'Internal server error.' })
@@ -204,7 +206,7 @@ export async function AddLinks(req: Request, res: Response): Promise<void> {
         const email = req.user.email;
         const body = req.body;
 
-        if (body.newUrl === '') {
+        if (body.newUrl === '' || typeof (body.newUrl) === 'undefined') {
             const length = 6;
             let result = '';
             const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
@@ -304,6 +306,15 @@ export async function DeleteLink(req: Request, res: Response): Promise<void> {
     try {
         const id = await req.params.id;
 
+        if (!isUuid(id)) {
+            return void res.status(400).json({ error: 'Invalid ID format.' });
+        }
+
+        const existing = await prisma.url.findUnique({ where: { id } });
+        if (!existing) {
+            return void res.status(404).json({ error: 'Link not found.' });
+        }
+
         const del = await prisma.url.delete({
             where: {
                 id
@@ -324,6 +335,15 @@ export async function UpdateLink(req: Request, res: Response): Promise<void> {
     try {
         const id = req.params.id;
         const body = req.body
+
+        if (!isUuid(id)) {
+            return void res.status(400).json({ error: 'Invalid ID format.' });
+        }
+
+        const existing = await prisma.url.findUnique({ where: { id } });
+        if (!existing) {
+            return void res.status(404).json({ error: 'Link not found.' });
+        }
 
         if (body.url !== "") {
             const up = await prisma.url.update({
@@ -366,13 +386,13 @@ export async function DeleteAccount(req: Request, res: Response): Promise<void> 
     try {
         const user = req.user;
 
-        const url = await prisma.url.delete({
+        const url = await prisma.url.deleteMany({
             where: {
                 email: user.email
             }
         })
 
-        const tok = await prisma.token.update({
+        const tok = await prisma.token.updateMany({
             where: {
                 email: user.email
             },
