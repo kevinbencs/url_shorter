@@ -38,7 +38,7 @@ export const LinkSchema = z.object({
 
 
 export const UpdateLinkSchema = z.object({
-    url: z.string(),
+    url: z.union([z.string(), z.undefined()],{errorMap: () => ({message: 'New url tag must be string or undefined'})}),
     once: z.boolean(),
     min: z.number().int({message: "Minute must be number"}).min(0, {message: 'Minute must be between 0 and 7200'}).max(7200, {message: 'Minute must be between 0 and 7200'} ),
 })

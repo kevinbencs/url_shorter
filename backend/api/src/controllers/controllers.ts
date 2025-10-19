@@ -33,6 +33,14 @@ export async function Register(req: Request, res: Response): Promise<void> {
 
         const body = req.body as { email: string, password: string, name: string }
 
+        const emailInDatab = await prisma.user.findUnique({
+            where: {
+                email: body.email,
+            }
+        })
+
+        if(emailInDatab) return void res.status(401).json({error: 'Email is used in another account.'})
+
         const hashedPassword = await bcrypt.hash(body.password, 10);
 
         const user = await prisma.user.create({
@@ -71,7 +79,9 @@ export async function LogIn(req: Request, res: Response): Promise<void> {
                 email: body.email,
             }
         })
+
         if (!user) return void res.status(401).json({ error: 'Invalid email or password. Please try again with the correct credentials' })
+
         const isPasswordValid = await bcrypt.compare(
             `${body.password}`,
             user.password
