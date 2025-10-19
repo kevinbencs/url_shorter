@@ -48,19 +48,15 @@ Directing the requests to the suitable server take place in the gateway, `/r->re
 
 ### Servers
 
-Redirections take place in the redirection server. APi server, pages server.
+All three servers are structured in the same way. The servers are created in the `index.ts`. The routes are in the `routes/routes.ts`. Api calls are checked in the `schema/schema.ts` with `zod`. Authorization checks are visible in `middleware` directory with limit checks. The requests are served in `controllers/controllers.ts`. 
 
 ### Frontend
 
-React dashboard and some simple pages (home, signin signup, search, 404). 
+React dashboard and some simple pages (home, signin signup, search, 404). The style of pages were creates using tailwindCSS. 
 
-Style: tailwindCSS. 
+Pages of dashboard: new password, dashboard.
 
-Dashboard pages:  new password, dashboard
-
-Sidebar, header
-
-Dashboard: link, viewer, chart.js graph (date, viewer), time, once
+The dashboard contains links, viewers, chart.js graphs (date, viewer), times (minute), onces (can be used once).
 
 ### Prisma schemas
 
