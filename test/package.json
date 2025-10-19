@@ -4,7 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "NODE_OPTIONS=--experimental-vm-modules jest --coverage"
+    "test_register": "NODE_OPTIONS=--experimental-vm-modules jest ./src/register.test.ts --coverage",
+    "test_login_out": "NODE_OPTIONS=--experimental-vm-modules jest ./src/login_out.test.ts --coverage",
+    "test_add_link": "NODE_OPTIONS=--experimental-vm-modules jest ./src/addlink.test.ts --coverage",
+    "test_get_link": "NODE_OPTIONS=--experimental-vm-modules jest ./src/getlink.test.ts --coverage",
+    "test_delete_link": "NODE_OPTIONS=--experimental-vm-modules jest ./src/deletelink.test.ts --coverage",
+    "test_update_link": "NODE_OPTIONS=--experimental-vm-modules jest ./src/updatelink.test.ts --coverage",
+    "test_delete_acc": "NODE_OPTIONS=--experimental-vm-modules jest ./src/deleteacc.test.ts --coverage",
+    "test_get_link_inf": "NODE_OPTIONS=--experimental-vm-modules jest ./src/getlinkinf.test.ts --coverage",
+    "test_update_pass": "NODE_OPTIONS=--experimental-vm-modules jest ./src/updatepass.test.ts --coverage"
   },
   "keywords": [],
   "author": "",

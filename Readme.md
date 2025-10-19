@@ -2,7 +2,7 @@
 
 Here is the code of an url shorter project (in development). 
 
-Technologies used: `react (vite), node.js, express, typescript, html, tailwindCSS, docker, prisma, jsonwebtoken, zod, http-proxy-middleware, swr, chart.js`
+Technologies used: `react (vite), node.js, express, typescript, html, tailwindCSS, docker, prisma, jsonwebtoken, zod, http-proxy-middleware, swr, chart.js, jest`
 
 ## System requirements (according to the MoSCoW priority model)
 
