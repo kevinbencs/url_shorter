@@ -38,6 +38,48 @@ DATABASE_URL ='postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@postgres:5432/{P
 2. Run `docker compose up --build -d`
 3. Run the api tests (optional)
 
+
+## Usage guide with https with self-signed certificates:
+
+1. Create a .env file in the root directory containing the following (in the `DATABASE_URL` enter the appropriate values to the curly bracket):
+```
+POSTGRES_USER = ''
+POSTGRES_PASSWORD = ''
+POSTGRES_DB = ''
+SECRET = ''
+SECRET_COOKIE = ''
+
+DATABASE_URL ='postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@postgres:5432/{POSTGRES_DB}'
+```
+2. Run `mkdir certs`
+3. Run 
+```
+  openssl req -x509 -newkey rsa:4096 -nodes -days 365 \
+  -keyout certs/selfsigned.key -out certs/selfsigned.crt \
+  -subj "/CN=localhost" \
+  -addext "subjectAltName=DNS:localhost,IP:127.0.0.1"
+```
+4. Run `node writeFile/cert.js`
+5. Run `docker compose up --build -d`
+6. Run the api tests (optional)
+
+## Usage guide with oracle cloud, free service:
+
+1. Create database in prisma https://console.prisma.io/login
+
+2. Create a .env file in the root directory containing the following (in the free cloud service we get 1 GB ram, so we use prisma database):
+```
+SECRET = ''
+SECRET_COOKIE = ''
+
+DATABASE_URL =''
+```
+
+3. Run `mkdir letsencrypt && touch letsencrypt/acme.json && chmod 600 letsencrypt/acme.json `
+4. Run `node writeFile/encrypt.js`
+5. Run `docker compose up --build -d`
+6. Run the api tests (optional)
+
 ## Description of the code
 
 Micro service which consists of 3 servers (api, redirect, pages), gateway, sql database (postgresSQL, prisma) and frontend (html, typescript, react).

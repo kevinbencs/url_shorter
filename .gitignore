@@ -16,6 +16,9 @@ generated
 examples.http
 
 build
-index.css
+
+/certs
+
+/letsencrypt
 
 /generated/prisma

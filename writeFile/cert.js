@@ -1,6 +1,28 @@
-version: '3.9'
+import { writeFileSync } from 'fs';
 
+
+const docker = `
 services:
+
+  traefik:
+    image: traefik:v3.1
+    command:
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--providers.file.filename=/etc/traefik/dynamic.yml"
+      - "--log.level=INFO"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "./letsencrypt:/letsencrypt"
+      - "./certs:/certs:ro"
+      - "./traefik.yml:/etc/traefik/traefik.yml:ro"
+      - "./dynamic.yml:/etc/traefik/dynamic.yml:ro"
+    restart: unless-stopped
+
+  
 
   gateway:
     build: 
@@ -14,13 +36,18 @@ services:
       - api
       - pages
       - redirect
-      - postgres
     environment:
       - NODE_ENV=production
       - REDIRECT_PORT=3002
       - API_PORT=3001
       - FRONTEND_PORT=3003
       - PORT=80
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.gateway.rule=PathPrefix(`/`)"
+      - "traefik.http.routers.gateway.entrypoints=websecure"
+      - "traefik.http.routers.gateway.tls=true"
+      - "traefik.http.services.gateway.loadbalancer.server.port=80"
 
   
   api:
@@ -99,3 +126,40 @@ services:
 
 volumes:
   pgdata:
+
+`
+
+const dynamic = `
+tls:
+  certificates:
+    - certFile: /certs/selfsigned.crt
+      keyFile: /certs/selfsigned.key
+`
+
+
+const traefik = `
+entryPoints:
+  web:
+    address: ":80"
+    http:
+      redirections:
+        entryPoint:
+          to: websecure
+          scheme: https
+
+  websecure:
+    address: ":443"
+
+providers:
+  docker: {}
+  file:
+    filename: /etc/traefik/dynamic.yml
+`
+
+try {
+    writeFileSync("../docker-compose.yml",docker);
+    writeFileSync("../dynamic.yml",dynamic);
+    writeFileSync("../traefik.yml",traefik);
+} catch (error) {
+    console.log(error)
+}
