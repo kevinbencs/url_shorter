@@ -7,9 +7,9 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  build-and-release:
     runs-on: ubuntu-latest
-
+    
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -27,8 +27,23 @@ jobs:
         working-directory: frontend/dashboard
         run: npm run build
 
-      - name: Upload build artifact
-        uses: actions/upload-artifact@v4
+      - name: Create zip archive
+        run: |
+          cd frontend/dashboard/dist
+          zip -r ../../../dashboard-dist.zip .
+          cd ../../..
+
+      - name: Generate release tag
+        id: tag
+        run: |
+          echo "RELEASE_TAG=build-$(date +'%Y%m%d-%H%M%S')" >> $GITHUB_OUTPUT
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
         with:
-          name: dashboard-dist
-          path: frontend/dashboard/dist
+          tag_name: ${{ steps.tag.outputs.RELEASE_TAG }}
+          name: Dashboard Build ${{ steps.tag.outputs.RELEASE_TAG }}
+          files: dashboard-dist.zip
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
