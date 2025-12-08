@@ -5,7 +5,7 @@ const docker = `
 services:
 
   traefik:
-    image: traefik:v3.1
+    image: traefik:v3.6.2
     command:
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
@@ -53,13 +53,14 @@ services:
       - API_PORT=3001
       - FRONTEND_PORT=3003
       - PORT=80
+      - TRUST_PROXY=true
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.gateway.rule=Host(your-domain.duckdns.org)"
       - "traefik.http.routers.gateway.entrypoints=websecure"
       - "traefik.http.routers.gateway.tls=true"
       - "traefik.http.services.gateway.loadbalancer.server.port=80"
-       - "traefik.http.routers.gateway.tls.certresolver=letsencrypt" 
+      - "traefik.http.routers.gateway.tls.certresolver=letsencrypt" 
 
   
   api:
@@ -159,8 +160,11 @@ RUN npx prisma generate
 CMD ["npm", "start"]
 `
 
+
+
 try {
     writeFileSync("../docker-compose.yml",docker);
+    writeFileSync("../backend/pages/Dockerfile", pageDocker)
 } catch (error) {
     console.log(error)
 }

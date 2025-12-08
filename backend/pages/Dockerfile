@@ -33,11 +33,11 @@ RUN cd frontend/pages && npx @tailwindcss/cli -i ./src/index.css -o ./dist/outpu
 # Build step (TypeScript)
 RUN npm run build
 
+# Prisma generate
+RUN npx prisma generate
+
 # Open port
 EXPOSE 3003
-
-#Prisma
-RUN npx prisma generate
 
 # Start app
 CMD ["npm", "start"]

@@ -45,15 +45,14 @@
                             "Content-type": "application/json",
                             "Access-Control-Allow-Origin": "*",
                         },
-                        body: JSON.stringify({ password: Pass.value, email: Email.value })
+                        body: JSON.stringify({ password: Pass.value, email: Email.value }),
                     })
 
-
-                    if(res.status === 302){
-                        window.location.href = res.headers.get('location') || '/dashboard';
-                    }
-
                     const resJSON = await res.json();
+
+                    if(res.status === 200){
+                        window.location.href = resJSON.redirect
+                    }
 
                     
 

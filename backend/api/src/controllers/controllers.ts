@@ -108,7 +108,7 @@ export async function LogIn(req: Request, res: Response): Promise<void> {
 
         res.cookie("user", token, options);
 
-        return void res.status(302).redirect('/dashboard')
+        return void res.status(200).json({redirect: '/dashboard'})
 
 
 
@@ -145,7 +145,7 @@ export async function LogOut(req: Request, res: Response): Promise<void> {
                 sameSite: 'lax'
             }
         );
-        return void res.status(302).redirect('/')
+        return void res.status(200).json({redirect: '/'})
     } catch (error) {
         console.log(error)
         return void res.status(500).json({ error: 'Internal server error.' })

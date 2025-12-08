@@ -1,6 +1,8 @@
-# Url shorter
+# Url shortener
 
-Here is the code of an url shorter project (in development). 
+Link: `https://shorterurl123.duckdns.org`
+
+Here is the code for a URL shortener project. 
 
 Technologies used: `react (vite), node.js, express, typescript, html, tailwindCSS, docker, prisma, jsonwebtoken, zod, http-proxy-middleware, swr, chart.js, jest`
 
@@ -10,22 +12,22 @@ Technologies used: `react (vite), node.js, express, typescript, html, tailwindCS
 - Generation of unique, non-colliding short URLs
 - Logging of client-side data (IP address, user agent, timestamp) for every click
 - API interfaces for creating and resolving short URLs
-- MHigh availability
+- High availability
 
 ### Should have
 - Support for limited lifetime or single-use short links
 - Admin interface for statistics and link management
 - Simple rate limiting on public API endpoints
 
-### Could
-- Unique aliases (e.g. `example.com/sale2025`)
+### Could have
+- Unique aliases (e.g.: `example.com/sale2025`)
 
-### Won't
-- Dynamic target URLs (e.g. A/B testing, time-based redirection)
+### Won't have
+- Dynamic target URLs (e.g.: A/B testing, time-based redirection)
 
 ## Usage guide:
 
-1. Create a .env file in the root directory containing the following (in the `DATABASE_URL` enter the appropriate values to the curly bracket):
+1. Create a .env file in the root directory containing the following (in the `DATABASE_URL` enter the appropriate values inside the curly braces):
 ```
 POSTGRES_USER = ''
 POSTGRES_PASSWORD = ''
@@ -36,10 +38,10 @@ SECRET_COOKIE = ''
 DATABASE_URL ='postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@postgres:5432/{POSTGRES_DB}'
 ```
 2. Run `docker compose up --build -d`
-3. Run the api tests (optional)
+3. Run the API tests (optional)
 
 
-## Usage guide with https with self-signed certificates:
+## Usage guide for https with self-signed certificates:
 
 1. Create a .env file in the root directory containing the following (in the `DATABASE_URL` enter the appropriate values to the curly bracket):
 ```
@@ -61,44 +63,47 @@ DATABASE_URL ='postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@postgres:5432/{P
 ```
 4. Run `node writeFile/cert.js`
 5. Run `docker compose up --build -d`
-6. Run the api tests (optional)
+6. Run the API tests (optional)
 
-## Usage guide with oracle cloud, free service:
+## Usage guide for Oracle Cloud, free tier:
 
-1. Create database in prisma https://console.prisma.io/login
+1. Create a database in Prisma https://console.prisma.io/login
 
-2. Create a .env file in the root directory containing the following (in the free cloud service we get 1 GB ram, so we use prisma database):
+2. Create a .env file in the root directory containing the following (in the free cloud service, we get 1 GB RAM, so we use Prisma database):
 ```
 SECRET = ''
 SECRET_COOKIE = ''
 
 DATABASE_URL =''
 ```
-
-3. Run `mkdir letsencrypt && touch letsencrypt/acme.json && chmod 600 letsencrypt/acme.json `
-4. Run `node writeFile/encrypt.js`
-5. Run `docker compose up --build -d`
-6. Run the api tests (optional)
+3. Run `cd frontend/dashboard && mkdir dist && cd dist && wget https://github.com/kevinbencs/url_shorter/releases/download/build-20251126-142316/dashboard-dist.zip && unzip dashboard-dist.zip && cd `
+4. Run `mkdir letsencrypt && touch letsencrypt/acme.json && chmod 600 letsencrypt/acme.json `
+5. Run `node writeFile/encrypt.js`
+6. Write `app.set('trust proxy', 1)` into the `gateway/src/gateway.ts` after the `const app = express();`.
+7. Run `docker compose build `
+8. Run `docker compose up -d`
+9. Open the ports (80, 443) on the firewalls (on the OS and in the dashboard)
+10. Run the API tests (optional)
 
 ## Description of the code
 
-Micro service which consists of 3 servers (api, redirect, pages), gateway, sql database (postgresSQL, prisma) and frontend (html, typescript, react).
+A microservice architecture consisting of 3 servers (api, redirect, pages), a gateway, a SQL database (PostgresSQL, Prisma), and a frontend (HTML, TypeScript, React).
 
 ### Gateway
 
-Directing the requests to the suitable server take place in the gateway, `/r->redirection server, /api-> api server, everything else -> pages server`.
+The gateway routes requests to the appropriate server., `/r -> redirection server, /api -> api server, everything else -> pages server`.
 
 ### Servers
 
-All three servers are structured in the same way. The servers are created in the `index.ts`. The routes are in the `routes/routes.ts`. Api calls are checked in the `schema/schema.ts` with `zod`. Authorization checks are visible in `middleware` directory with limit checks. The requests are served in `controllers/controllers.ts`. 
+All three servers are structured in the same way. The servers are created in the `index.ts`. The routes are in the `routes/routes.ts`. API calls are checked in the `schema/schema.ts` with `zod`. Authorization and rate-limit checks are located in the `middleware` directory. The requests are handled in`controllers/controllers.ts`. 
 
 ### Frontend
 
-React dashboard and some simple pages (home, signin signup, search, 404). The style of pages were creates using tailwindCSS. 
+React dashboard and some simple pages (home, sign-in sign-up, search, 404). The pages are styled using Tailwind CSS. 
 
-Pages of dashboard: new password, dashboard.
+Dashboard pages: New Password, Dashboard.
 
-The dashboard contains links, viewers, chart.js graphs (date, viewer), times (minute), onces (can be used once).
+The dashboard contains links, viewers, chart.js graphs (date, viewer), times (minutes), one-time links (can be used once).
 
 ### Prisma schemas
 
@@ -186,7 +191,7 @@ email: string,
 Response:
 ```
 Code Description
-302  redirect to /dashboard
+200  redirect: '/dashboard'
 ```
 
 Error:
@@ -204,7 +209,7 @@ Code Description
 Response:
 ```
 Code Description
-302  redirect to /
+200  redirect: '/'
 ```
 
 Error:
@@ -363,7 +368,7 @@ Error:
 ```
 Code Description
 500  error: 'Internal server error.
-404  message: 'This url is not available.'
+404  message: 'This URL is not available.'
 ```
 
 - Get /api/name

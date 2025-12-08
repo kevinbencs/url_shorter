@@ -32,12 +32,22 @@ const Sidebar = () => {
 
     const logOut = async () => {
         try {
-            const res = await fetch('/api/logout')
-            if(res.status === 302){
-                window.location.href = res.headers.get('location') || '/';
-            }
+            const res = await fetch('/api/logout',{
+                method: "GET",
+                headers: {
+                            "Accept": "application/json, text/plain",
+                            "Content-type": "application/json",
+                            "Access-Control-Allow-Origin": "*",
+                        },
+            })
 
             const resJson = await res.json();
+            
+            if(res.status === 200){
+                window.location.href = resJson.redirect;
+            }
+
+            
             if(res.status >= 400){
                 console.log(resJson);
             }
