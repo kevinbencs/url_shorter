@@ -76,13 +76,13 @@ SECRET_COOKIE = ''
 
 DATABASE_URL =''
 ```
-3. Run `cd frontend/dashboard && mkdir dist && cd dist && wget https://github.com/kevinbencs/url_shorter/releases/download/build-20251208-233216/dashboard-dist.zip && unzip dashboard-dist.zip && cd `
+3. Run `cd frontend/dashboard && mkdir dist && cd dist && wget https://github.com/kevinbencs/url_shorter/releases/download/build-20251217-223630/dashboard-dist.zip && unzip dashboard-dist.zip && cd `
 4. Run `mkdir letsencrypt && touch letsencrypt/acme.json && chmod 600 letsencrypt/acme.json `
 5. Run `node writeFile/encrypt.js`
 6. Write `app.set('trust proxy', 1)` into the `gateway/src/gateway.ts` after the `const app = express();`.
 7. Open the ports (80, 443) on the firewalls (on the OS and in the dashboard)
-8. Upload the redirect server to Vercel (for the faster redirect).
-9. Set up the domain names.
+8. Upload the redirect server to Vercel (for the faster redirect). The easiest way is to upload the code to GitHub and then host it on Vercel.
+9. Set up the domain names (change the `https://redirect123.duckdns.org/` domain name in the `frontend/dashboard/dist/assets/index-TwH4gR_u.js` too).
 10. Run `docker compose build `
 11. Run `docker compose up -d`
 12. Run the API tests (optional)
