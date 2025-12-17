@@ -83,7 +83,7 @@ const UrlOfMyUrls = (props: { id: string, viewer: number, data: graphData[], rea
                         <button onClick={handleShowUpdate} className="cursor-pointer">
                             <IoSettings />
                         </button>
-                        <div>url: {props.real_url}</div>
+                        <div>url: https://redirect123.duckdns.org/{props.real_url}</div>
                         <div>once: {String(props.once)}</div>
                         <div>time: {props.time}</div>
                     </div>

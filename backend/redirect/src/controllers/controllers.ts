@@ -1,11 +1,11 @@
-import pkg from 'express';
 import { PrismaClient } from '@prisma/client';
+import pkg from 'express';
 
 const { Request, Response } = pkg
 const prisma = new PrismaClient();
 
-//GET request - Redirect
-export async function UrlRedirect(req: Request, res: Response): Promise<void> {
+
+export const UrlRedirect = async (req: Request, res: Response) => {
     try {
 
         const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
@@ -23,11 +23,11 @@ export async function UrlRedirect(req: Request, res: Response): Promise<void> {
         const accept = req.headers['accept'];
 
 
-        const token = req.signedCookies['user'];
         const target = req.params.url;
 
+
         if (target.includes('.') || req.originalUrl.includes('.')) {
-            return void res.status(302).redirect('/')
+            return void res.status(302).redirect('https://shorterurl123.duckdns.org/?info=no_url')
         }
 
         const url = await prisma.url.findUnique({
@@ -37,50 +37,49 @@ export async function UrlRedirect(req: Request, res: Response): Promise<void> {
         })
 
         const now = Number(new Date());
-        
-        if (!url || (url.once && url.viewer > 0) || (url.time > 0 && (now - Number(url.createdAt))/1000/6 > url.time)) {
-            return void res.status(302).redirect(`/?info=no_url`);
+
+        if (!url || (url.once && url.viewer > 0) || (url.time > 0 && (now - Number(url.createdAt)) / 1000 / 6 > url.time)) {
+            return void res.status(302).redirect(`https://shorterurl123.duckdns.org/?info=no_url`);
         }
 
 
-        if (token) {
-            const red = await prisma.click.create({
-                data: {
-                    new_url: target,
-                    ip,
-                    user_agent: userAgent,
-                    referer: referer || '',
-                    language,
-                    accept,
-                    token
-                }
-            })
-        }
-        else {
-            const red = await prisma.click.create({
-                data: {
-                    new_url: target,
-                    ip,
-                    user_agent: userAgent,
-                    referer: referer || '',
-                    language,
-                    accept,
-                }
-            })
-        }
+        const red = await prisma.click.create({
+            data: {
+                new_url: target,
+                ip: String(ip),
+                user_agent: userAgent,
+                referer: referer || '',
+                language,
+                accept,
+            }
+        })
 
 
         await prisma.url.update({
-            where:{
+            where: {
                 new_url: target
             },
-            data:{
+            data: {
                 viewer: url.viewer + 1
             }
         })
 
 
         return void res.status(302).redirect(`${url.real_url}`)
+    } catch (error) {
+        console.log(error)
+        return void res.status(500).json({ error: 'Internal server error.' })
+    }
+}
+
+
+
+
+export const NoUrlRedirect = (req: Request, res: Response) => {
+    try {
+
+        return void res.status(302).redirect('https://shorterurl123.duckdns.org/?info=no_url')
+
     } catch (error) {
         console.log(error)
         return void res.status(500).json({ error: 'Internal server error.' })

@@ -65,7 +65,7 @@ DATABASE_URL ='postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@postgres:5432/{P
 5. Run `docker compose up --build -d`
 6. Run the API tests (optional)
 
-## Usage guide for Oracle Cloud, free tier:
+## Usage guide for Oracle Cloud, free tier and Vercel:
 
 1. Create a database in Prisma https://console.prisma.io/login
 
@@ -80,10 +80,12 @@ DATABASE_URL =''
 4. Run `mkdir letsencrypt && touch letsencrypt/acme.json && chmod 600 letsencrypt/acme.json `
 5. Run `node writeFile/encrypt.js`
 6. Write `app.set('trust proxy', 1)` into the `gateway/src/gateway.ts` after the `const app = express();`.
-7. Run `docker compose build `
-8. Run `docker compose up -d`
-9. Open the ports (80, 443) on the firewalls (on the OS and in the dashboard)
-10. Run the API tests (optional)
+7. Open the ports (80, 443) on the firewalls (on the OS and in the dashboard)
+8. Upload the redirect server to Vercel (for the faster redirect).
+9. Set up the domain names.
+10. Run `docker compose build `
+11. Run `docker compose up -d`
+12. Run the API tests (optional)
 
 ## Description of the code
 
