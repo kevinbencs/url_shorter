@@ -73,7 +73,7 @@ const UrlOfMyUrls = (props: { id: string, viewer: number, data: graphData[], rea
             }
             <div className="flex gap-3 border-b-2 border-t-2">
                 <button className="cursor-pointer" onClick={delUrl}>&#9940;</button>
-                <div className="ml-2 mr-2 w-full">{props.new_url}</div>
+                <div className="ml-2 mr-2 w-full">https://redirect123.duckdns.org/{props.new_url}</div>
                 <button className={`cursor-pointer ${show === true ? 'rotate-180' : 'rotate-0'}`} onClick={() => {setShow(!show); setShowUpdate(false)}}> &#128314;</button>
             </div>
             {show &&
@@ -83,7 +83,7 @@ const UrlOfMyUrls = (props: { id: string, viewer: number, data: graphData[], rea
                         <button onClick={handleShowUpdate} className="cursor-pointer">
                             <IoSettings />
                         </button>
-                        <div>url: https://redirect123.duckdns.org/{props.real_url}</div>
+                        <div>url: {props.real_url}</div>
                         <div>once: {String(props.once)}</div>
                         <div>time: {props.time}</div>
                     </div>
