@@ -151,8 +151,9 @@ const redirect = `
 import express, { urlencoded } from 'express';
 import * as path from 'path'
 import { fileURLToPath } from 'url'
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from '@prisma/client/edge';
 import * as dotenv from 'dotenv'
+import { withAccelerate } from '@prisma/extension-accelerate'
 
 dotenv.config();
 
@@ -164,7 +165,10 @@ server.use(express.json({
 }));
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 server.use(express.static(path.join(__dirname, '../public')));
-const prisma = new PrismaClient();
+
+const prisma = new PrismaClient({
+  accelerateUrl: process.env.DATABASE_URL,
+}).$extends(withAccelerate());
 
 server.use(urlencoded({ extended: false }));
 server.disable("x-powered-by"); //Reduce fingerprinting
