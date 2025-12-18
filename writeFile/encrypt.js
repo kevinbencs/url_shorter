@@ -166,9 +166,7 @@ server.use(express.json({
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 server.use(express.static(path.join(__dirname, '../public')));
 
-const prisma = new PrismaClient({
-  accelerateUrl: process.env.DATABASE_URL,
-}).$extends(withAccelerate());
+const prisma = new PrismaClient().$extends(withAccelerate());
 
 server.use(urlencoded({ extended: false }));
 server.disable("x-powered-by"); //Reduce fingerprinting
