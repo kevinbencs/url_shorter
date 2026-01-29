@@ -1,6 +1,6 @@
 # Url shortener
 
-Link: `https://shorterurl123.duckdns.org`
+Link: https://shorterurl123.duckdns.org
 
 Here is the code for a URL shortener project. 
 
