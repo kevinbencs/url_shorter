@@ -39,7 +39,7 @@ export async function Register(req: Request, res: Response): Promise<void> {
             }
         })
 
-        if(emailInDatab) return void res.status(401).json({error: 'Email is used in another account.'})
+        if (emailInDatab) return void res.status(422).json({ error: 'Email is used in another account.' })
 
         const hashedPassword = await bcrypt.hash(body.password, 10);
 
@@ -50,7 +50,7 @@ export async function Register(req: Request, res: Response): Promise<void> {
                 name: body.name,
             }
         })
-        return void res.status(200).json({ message: 'Signed up' })
+        return void res.status(201).json({ message: 'Signed up' })
     } catch (error) {
         console.log(error)
         return void res.status(500).json({ error: 'Internal server error.' })
@@ -108,7 +108,7 @@ export async function LogIn(req: Request, res: Response): Promise<void> {
 
         res.cookie("user", token, options);
 
-        return void res.status(200).json({redirect: '/dashboard'})
+        return void res.status(200).json({ redirect: '/dashboard' })
 
 
 
@@ -145,7 +145,7 @@ export async function LogOut(req: Request, res: Response): Promise<void> {
                 sameSite: 'lax'
             }
         );
-        return void res.status(200).json({redirect: '/'})
+        return void res.status(200).json({ redirect: '/' })
     } catch (error) {
         console.log(error)
         return void res.status(500).json({ error: 'Internal server error.' })
@@ -217,25 +217,40 @@ export async function AddLinks(req: Request, res: Response): Promise<void> {
         const body = req.body;
 
         if (body.newUrl === '' || typeof (body.newUrl) === 'undefined') {
-            const length = 6;
-            let result = '';
-            const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
-            const charactersLength = characters.length;
-            for (let i = 0; i < length; i++) {
-                result += characters.charAt(Math.floor(Math.random() * charactersLength));
+            let makeLink = true;
+
+            while (makeLink) {
+                const length = 6;
+                let result = '';
+                const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+                const charactersLength = characters.length;
+                for (let i = 0; i < length; i++) {
+                    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+                }
+
+                const linkExist = await prisma.url.findUnique({
+                    where: {
+                        new_url: result
+                    }
+
+                })
+
+                if (!linkExist) {
+                    makeLink = false
+                    const link = await prisma.url.create({
+                        data: {
+                            email,
+                            new_url: result,
+                            real_url: body.url,
+                            time: body.min,
+                            once: body.once
+                        }
+                    })
+                }
             }
 
 
 
-            const link = await prisma.url.create({
-                data: {
-                    email,
-                    new_url: result,
-                    real_url: body.url,
-                    time: body.min,
-                    once: body.once
-                }
-            })
         }
         else {
             const link = await prisma.url.findUnique({
@@ -246,7 +261,7 @@ export async function AddLinks(req: Request, res: Response): Promise<void> {
             })
 
             if (link) {
-                return void res.status(400).json({ error: `${body.newUrl} is used. Please select another url parameter or leave the input field blank.` })
+                return void res.status(422).json({ error: `${body.newUrl} is used. Please select another url parameter or leave the input field blank.` })
             }
 
 
@@ -261,7 +276,7 @@ export async function AddLinks(req: Request, res: Response): Promise<void> {
             })
         }
 
-        return void res.status(200).json({ message: 'Link added' })
+        return void res.status(201).json({ message: 'Link added' })
     } catch (error) {
         console.log(error)
         return void res.status(500).json({ error: 'Internal server error.' })
@@ -315,6 +330,7 @@ export async function GetLinkInformation(req: Request, res: Response): Promise<v
 export async function DeleteLink(req: Request, res: Response): Promise<void> {
     try {
         const id = await req.params.id;
+        const user = req.user;
 
         if (!isUuid(id)) {
             return void res.status(400).json({ error: 'Invalid ID format.' });
@@ -324,6 +340,8 @@ export async function DeleteLink(req: Request, res: Response): Promise<void> {
         if (!existing) {
             return void res.status(404).json({ error: 'Link not found.' });
         }
+
+        if (existing.email !== user.email) return void res.status(403).json({ error: 'Cannot delete the link' })
 
         const del = await prisma.url.delete({
             where: {
@@ -345,6 +363,9 @@ export async function UpdateLink(req: Request, res: Response): Promise<void> {
     try {
         const id = req.params.id;
         const body = req.body
+        const user = req.user;
+
+
 
         if (!isUuid(id)) {
             return void res.status(400).json({ error: 'Invalid ID format.' });
@@ -354,6 +375,8 @@ export async function UpdateLink(req: Request, res: Response): Promise<void> {
         if (!existing) {
             return void res.status(404).json({ error: 'Link not found.' });
         }
+
+        if (existing.email !== user.email) return void res.status(403).json({ error: 'Cannot update the link' });
 
         if (body.url !== "") {
             const up = await prisma.url.update({
@@ -418,7 +441,7 @@ export async function DeleteAccount(req: Request, res: Response): Promise<void> 
         })
 
         res.clearCookie("user");
-        return void res.status(302).redirect('/')
+        return void res.status(200).json({ redirect: '/' })
     } catch (error) {
         console.log(error)
         return void res.status(500).json({ error: 'Internal server error.' })

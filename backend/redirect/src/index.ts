@@ -2,7 +2,7 @@ import express, { urlencoded } from 'express';
 import * as path from 'path'
 import { fileURLToPath } from 'url'
 import { PORT } from './config/config';
-import router from './routes/routers';
+import router from './routers/routers';
 
 
 

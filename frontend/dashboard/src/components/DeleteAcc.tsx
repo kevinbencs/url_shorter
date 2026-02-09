@@ -25,12 +25,13 @@ const DeleteAcc = () => {
                     },
                 })
 
-                if(res.status === 302){
-                    window.location.href = res.headers.get('location') || '/';
+                const resJson = await res.json();
+
+                if (res.status === 200) {
+                    window.location.href = resJson.redirect;
                 }
 
                 if (!res.ok) {
-                    const resJson = await res.json() as { error: string };
 
                     setErr(resJson.error)
                 }
