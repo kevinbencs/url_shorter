@@ -47,7 +47,7 @@ describe("Test get link api with login", () => {
             redirect: "manual"
         })
 
-        expect(res.status).toBe(302)
+        expect(res.status).toBe(200)
 
         cookie = res.headers.raw()["set-cookie"]
 

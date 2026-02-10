@@ -93,6 +93,9 @@
 
         } catch (error) {
             console.log(error);
+            if (ErrorDiv) {
+                ErrorDiv.innerHTML = `Something went wrong with network connect. Please try again.`
+            }
             canSubmit = true;
         }
 

@@ -10,7 +10,7 @@ export const validateData = (schema: z.ZodObject<any,any>) => {
             schema.parse(req.body);
             next();
         } catch (error) {
-            console.log(error)
+            console.log('Validation error:: '+error.errors)
             if (error instanceof ZodError){
                 const errorMessages = error.errors;
                 return void res.status(400).json({failed: errorMessages})

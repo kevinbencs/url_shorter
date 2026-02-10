@@ -8,6 +8,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "NODE_ENV=production node dist/index.js",
+    "build": "esbuild src/index.ts --bundle --platform=node --outfile=dist/index.js --format=esm  --external:node:* --external:path --packages=external",
     "dev:node": "NODE_ENV=development node --watch dist/index.js",
     "dev:tsc": "NODE_ENV=development nodemon --watch src --ext ts --exec ts-node src/index.ts",
     "check": "tsc --noEmit src/index.ts"

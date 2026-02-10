@@ -52,7 +52,7 @@ export async function Register(req: Request, res: Response): Promise<void> {
         })
         return void res.status(201).json({ message: 'Signed up' })
     } catch (error) {
-        console.log(error)
+        console.error('Registration error:', error)
         return void res.status(500).json({ error: 'Internal server error.' })
     }
 }
