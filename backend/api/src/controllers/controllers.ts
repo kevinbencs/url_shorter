@@ -27,7 +27,7 @@ interface linkDescription {
 
 
 
-//POST request - Sing up
+//POST request - Sign up
 export async function Register(req: Request, res: Response): Promise<void> {
     try {
 
@@ -39,7 +39,7 @@ export async function Register(req: Request, res: Response): Promise<void> {
             }
         })
 
-        if (emailInDatab) return void res.status(422).json({ error: 'Email is used in another account.' })
+        if (emailInDatab) return void res.status(409).json({ error: 'Email is used in another account.' })
 
         const hashedPassword = await bcrypt.hash(body.password, 10);
 
@@ -57,7 +57,7 @@ export async function Register(req: Request, res: Response): Promise<void> {
     }
 }
 
-//POST request - Sing in
+//POST request - Sign in
 export async function LogIn(req: Request, res: Response): Promise<void> {
     try {
 
@@ -261,7 +261,7 @@ export async function AddLinks(req: Request, res: Response): Promise<void> {
             })
 
             if (link) {
-                return void res.status(422).json({ error: `${body.newUrl} is used. Please select another url parameter or leave the input field blank.` })
+                return void res.status(409).json({ error: `${body.newUrl} is used. Please select another url parameter or leave the input field blank.` })
             }
 
 
@@ -379,6 +379,14 @@ export async function UpdateLink(req: Request, res: Response): Promise<void> {
         if (existing.email !== user.email) return void res.status(403).json({ error: 'Cannot update the link' });
 
         if (body.url !== "") {
+            const link = await prisma.url.findUnique({
+                where: {
+                    new_url: body.newUrl,
+                }
+
+            })
+
+            if(link && link.id !== id) return res.status(409).json({error: 'Url code is used for anothet link.'})
             const up = await prisma.url.update({
                 where: {
                     id
