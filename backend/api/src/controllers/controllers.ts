@@ -381,7 +381,7 @@ export async function UpdateLink(req: Request, res: Response): Promise<void> {
         if (body.url !== "") {
             const link = await prisma.url.findUnique({
                 where: {
-                    new_url: body.newUrl,
+                    new_url: body.url,
                 }
 
             })
