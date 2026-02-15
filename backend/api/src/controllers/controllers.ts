@@ -386,7 +386,7 @@ export async function UpdateLink(req: Request, res: Response): Promise<void> {
 
             })
 
-            if(link && link.id !== id) return res.status(409).json({error: 'Url code is used for anothet link.'})
+            if(link && link.id !== id) return res.status(409).json({error: 'Url code is used for another link.'})
             const up = await prisma.url.update({
                 where: {
                     id
